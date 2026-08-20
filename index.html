@@ -5,30 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>STACKD Tracker Pro</title>
     
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <!-- HTML2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
-            --bg: #0d0d0f; --surface: #17171c; --surface-subtle: #22222a; --border: #2c2c36;
-            --text: #f4f4f6; --text-muted: #8e8e9a; --yellow: #facc15; --yellow-hover: #eab308;
-            --green: #22c55e; --red: #ef4444; --purple: #a855f7; --blue: #38bdf8;
-            --radius: 16px; --radius-sm: 10px;
+            --bg: #0d0d0f;
+            --surface: #17171c;
+            --surface-subtle: #22222a;
+            --border: #2c2c36;
+            --text: #f4f4f6;
+            --text-muted: #8e8e9a;
+            --yellow: #facc15;
+            --yellow-hover: #eab308;
+            --green: #22c55e;
+            --red: #ef4444;
+            --purple: #a855f7;
+            --blue: #38bdf8;
+            --radius: 16px;
+            --radius-sm: 10px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; color-scheme: dark; overflow-x: hidden; }
 
-        header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+        /* Header & Hamburger */
+        header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-size: 1.25rem; font-weight: 900; letter-spacing: 2px; color: var(--yellow); display: flex; align-items: center; gap: 10px; }
         .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); }
         .positive { color: var(--green); } .negative { color: var(--red); }
 
+        /* Sidebar Menu */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
-        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
+        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto;}
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .sidebar-header h2 { color: var(--yellow); letter-spacing: 1px; font-weight: 900; }
@@ -40,15 +55,18 @@
         .view-section.active { display: block; animation: fadeIn 0.2s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Cards & Typography */
         .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
         .hero-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
         .hero-card .main-stat { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 16px; }
         .stats-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border); }
-        .stat-box .sub-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
+        .stat-box .sub-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
         .stat-box .sub-value { font-size: 1.1rem; font-weight: 700; }
         .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 4px 12px; }
 
         .date-header { background: var(--surface-subtle); color: var(--yellow); padding: 6px 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; margin: 15px 0 8px 0; display: block; border: 1px solid var(--border); text-align: center; letter-spacing: 1px;}
+
+        /* Lists & Transactions */
         .category-list, .feed-list { display: flex; flex-direction: column; gap: 8px; }
         .category-row, .tx-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
         .category-meta { display: flex; align-items: center; gap: 10px; }
@@ -64,11 +82,13 @@
         .tx-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
         .btn-icon { background: var(--surface-subtle); border: none; color: var(--text-muted); font-size: 0.75rem; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-weight: bold; }
 
+        /* Filter Chips */
         .filter-wrapper { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 8px; scrollbar-width: none; }
         .filter-wrapper::-webkit-scrollbar { display: none; }
         .chip { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: all 0.15s; }
         .chip.active { background: var(--yellow); color: #000; border-color: var(--yellow); }
 
+        /* Forms */
         .segmented-control { display: flex; background: var(--surface-subtle); border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 18px; }
         .seg-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; background: transparent; color: var(--text-muted); font-size: 0.9rem; font-weight: 700; cursor: pointer; }
         .seg-btn.active { background: var(--yellow); color: #000; }
@@ -81,6 +101,14 @@
         .btn-submit:active { transform: scale(0.98); }
         .btn-quick-salary { width: 100%; background: transparent; border: 1px dashed var(--purple); color: var(--purple); border-radius: var(--radius-sm); padding: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 12px; }
 
+        /* Export & Vault specific */
+        .export-btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-pdf { flex: 1; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-csv { flex: 1; background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
+        .vault-pill h3 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
+        .vault-pill h1 { font-size: 2.2rem; margin: 0; }
+        
         .progress-wrapper { margin-bottom: 15px; }
         .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
         .progress-bar-bg { width: 100%; height: 12px; background: var(--surface-subtle); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
@@ -92,13 +120,7 @@
         .denom-row span { font-weight: bold; width: 40px; color: var(--yellow); }
         .denom-row input { padding: 8px; margin: 0; text-align: center; }
 
-        .export-btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-pdf { flex: 1; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-csv { flex: 1; background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
-        .vault-pill h3 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
-        .vault-pill h1 { font-size: 2.5rem; margin: 0; }
-
+        /* Bottom Nav */
         nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); z-index: 40; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--yellow); }
@@ -106,27 +128,31 @@
         .nav-add-btn { background: var(--yellow); color: #000; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; border: none; cursor: pointer; margin-top: -18px; box-shadow: 0 4px 12px rgba(250, 204, 21, 0.35); transition: 0.2s;}
         .nav-add-btn:active { transform: scale(0.9); }
 
+        /* Modals & Toasts */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); z-index: 200; align-items: flex-end; justify-content: center; }
         .modal.open { display: flex; }
         .modal-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; padding: 20px 20px max(24px, env(safe-area-inset-bottom)); max-height: 90vh; overflow-y:auto;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; }
-        .toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: bottom 0.3s ease; z-index: 999; text-align: center; }
+        
+        .toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: var(--green); color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 999; }
         .toast.show { bottom: max(90px, calc(env(safe-area-inset-bottom) + 90px)); }
+
         #pdfReportContainer { display: none; background: white; color: black; padding: 40px; font-family: Arial, sans-serif; }
     </style>
 </head>
 <body>
 
+    <!-- Toast Notification -->
     <div id="toast" class="toast">Saved Successfully!</div>
 
-    <!-- Sidebar Menu -->
+    <!-- Sidebar Menu Overlay & Drawer -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>MENU</h2></div>
         <a class="menu-link" onclick="switchTab('dashboard'); toggleMenu();">📊 Dashboard</a>
         <a class="menu-link" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active').click(); toggleMenu();">📈 Dedicated Sales Log</a>
-        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions Feed</a>
+        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions</a>
         <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Shift & Cash Closer</a>
         <a class="menu-link" onclick="switchTab('balances'); toggleMenu();">🏦 Accounts & Transfers</a>
         <a class="menu-link" onclick="switchTab('salary-vault'); toggleMenu();">💰 Salary Vault</a>
@@ -134,8 +160,13 @@
     </div>
 
     <header>
-        <div class="brand"><button class="menu-btn" onclick="toggleMenu()">☰</button> STACKD</div>
-        <div class="header-actions"><div class="net-pill" id="headerProfitPill">Offline Mode</div></div>
+        <div class="brand">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            STACKD
+        </div>
+        <div class="header-actions">
+            <div class="net-pill" id="headerProfitPill">Connecting...</div>
+        </div>
     </header>
 
     <main>
@@ -157,8 +188,8 @@
                     </div>
                 </div>
                 <div class="stats-split" style="padding-top:0; border:none;">
-                    <div class="stat-box"><div class="sub-label">Salary Vault</div><div class="sub-value" style="color:var(--purple);" id="dashVault">Rs 0</div></div>
-                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
+                    <div class="stat-box"><div class="sub-label">Lifetime Sales</div><div class="sub-value" id="dashTotalSales">Rs 0</div></div>
+                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net Profit / P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
                 </div>
             </div>
             <div class="section-title">Where Your Money Goes</div>
@@ -169,6 +200,7 @@
         <section id="view-sales" class="view-section">
             <div class="form-card" style="padding:15px;">
                 <h3 style="color:var(--yellow); margin-bottom:15px; text-transform:uppercase;">Sales Log</h3>
+                
                 <div class="filter-wrapper" id="salesFilters">
                     <button class="chip active" onclick="filterSalesView('all', this)">All Time</button>
                     <button class="chip" onclick="filterSalesView('today', this)">Today</button>
@@ -176,15 +208,17 @@
                     <button class="chip" onclick="filterSalesView('week', this)">Last 7 Days</button>
                     <button class="chip" onclick="filterSalesView('month', this)">This Month</button>
                 </div>
+
                 <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin-bottom:15px; text-align:center; border: 1px solid var(--border);">
                     <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:5px;">Total For Selected Period</div>
                     <div style="font-size:1.8rem; font-weight:800; color:var(--green);" id="salesFilterTotal">Rs 0</div>
                 </div>
+
                 <div class="feed-list" id="salesOnlyList"></div>
             </div>
         </section>
 
-        <!-- 3. BALANCES & TRANSFERS -->
+        <!-- 3. BALANCES & TRANSFERS VIEW -->
         <section id="view-balances" class="view-section">
             <div class="hero-card" style="text-align:center;">
                 <h3 style="color:var(--yellow); margin-bottom:20px; text-transform:uppercase;">Current Accounts</h3>
@@ -204,7 +238,7 @@
                             <option value="TillToHand">Till ➡️ Hand</option>
                             <option value="TillToBank">Till ➡️ Bank/Online</option>
                             <option value="HandToBank">Hand ➡️ Bank/Online</option>
-                            <option value="BankToHand">Bank/Online ➡️ Hand (Withdrawal)</option>
+                            <option value="BankToHand">Bank/Online ➡️ Hand</option>
                             <option value="BankToTill">Bank/Online ➡️ Till</option>
                         </select>
                     </div>
@@ -215,11 +249,36 @@
 
             <div class="form-card" style="border-color:var(--red);">
                 <h3 style="margin-bottom:15px; color:var(--red);">Fix / Adjust Balances</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below to forcefully correct the app's math without affecting profit/loss history.</p>
-                <div class="form-group"><label>Exact Till Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjTillAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button></div></div>
-                <div class="form-group"><label>Exact Hand Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjHandAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button></div></div>
-                <div class="form-group"><label>Exact Bank / Online</label><div style="display:flex; gap:10px;"><input type="number" id="adjBankAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button></div></div>
-                <div class="form-group"><label>Exact Salary Vault</label><div style="display:flex; gap:10px;"><input type="number" id="adjVaultAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Vault')">Set</button></div></div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below to correct the math immediately without affecting profit/loss history.</p>
+                
+                <div class="form-group">
+                    <label>Exact Till Cash</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="adjTillAmt" inputmode="decimal">
+                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Exact Hand Cash</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="adjHandAmt" inputmode="decimal">
+                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Exact Bank / Online</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="adjBankAmt" inputmode="decimal">
+                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Exact Salary Vault</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="adjVaultAmt" inputmode="decimal">
+                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Vault')">Set</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -260,7 +319,7 @@
                         <label>Category</label>
                         <select id="addExpCat" required>
                             <option value="Food & Ingredients">Food & Ingredients</option>
-                            <option value="Salaries & Wages">Salaries & Wages</option>
+                            <option value="Salaries & Wages">Salaries & Wages (Add to Vault)</option>
                             <option value="Staff Expenses">Staff Expenses</option>
                             <option value="Owner Expenses">Owner Expenses</option>
                             <option value="Packaging">Packaging</option>
@@ -276,7 +335,6 @@
                             <option value="Till">Cash (From Till)</option>
                             <option value="Hand">Cash (From Hand)</option>
                             <option value="Bank">Online / Bank Account</option>
-                            <option value="Card">Bank Card</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Description</label><input type="text" id="addExpItem" required></div>
@@ -336,7 +394,7 @@
                 <h3>Total Salary Reserve (The Vault)</h3>
                 <h1 id="vaultBalance">Rs 0</h1>
             </div>
-            
+
             <div class="form-card">
                 <h3 style="color:var(--yellow); margin-bottom:15px;">Fund The Vault</h3>
                 <form onsubmit="handleFundVault(event)">
@@ -393,7 +451,7 @@
             <!-- CSV IMPORT SECTION -->
             <div class="form-card" style="border-color:var(--green);">
                 <h3 style="color:var(--green); margin-bottom:10px;">Restore Data from CSV</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Select your downloaded CSV file to permanently restore your lifetime data.</p>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Select your downloaded CSV file to permanently restore your lifetime data to the cloud.</p>
                 <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="importCSV(event)">
                 <button class="btn-submit" style="background:var(--surface-subtle); color:var(--green); border:1px solid var(--green);" onclick="document.getElementById('csvFileInput').click()">⬆️ Select Backup CSV File</button>
             </div>
@@ -412,6 +470,7 @@
                     <div class="form-group"><label>Start Date</label><input type="date" id="exportStart"></div>
                     <div class="form-group"><label>End Date</label><input type="date" id="exportEnd"></div>
                 </div>
+                
                 <div class="export-btn-group">
                     <button class="btn-pdf" onclick="generateReport('pdf')">Download PDF</button>
                     <button class="btn-csv" onclick="generateReport('csv')">Download Excel</button>
@@ -464,7 +523,7 @@
         </div>
     </div>
 
-    <!-- Hidden HTML for PDF -->
+    <!-- Hidden HTML for PDF generation -->
     <div id="pdfReportContainer">
         <div class="pdf-header"><h1>STACKD BUSINESS REPORT</h1><p id="pdfDateRangeText"></p></div>
         <div class="pdf-summary">
@@ -480,38 +539,7 @@
 
     <script>
         // ==========================================
-        // 1. OFFLINE-FIRST MEMORY & SETUP
-        // ==========================================
-        let sales = JSON.parse(localStorage.getItem('stackd_sales')) || [];
-        let expenses = JSON.parse(localStorage.getItem('stackd_expenses')) || [];
-        let salaryPayouts = JSON.parse(localStorage.getItem('stackd_payouts')) || [];
-        let transfers = JSON.parse(localStorage.getItem('stackd_transfers')) || [];
-        let currentFilter = 'All';
-        
-        const salaryTargets = { Ahmed: 20000, Kainat: 20000, Muqadas: 20000, Amroz: 25000 };
-        const TOTAL_SALARY_GOAL = 85000;
-
-        // Custom ID generator that prefixes timestamp for PERFECT SORTING
-        const generateID = () => Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
-
-        function getBusinessDate() {
-            const now = new Date(); if (now.getHours() < 4) now.setDate(now.getDate() - 1);
-            const offset = now.getTimezoneOffset(); const localNow = new Date(now.getTime() - (offset*60*1000));
-            return localNow.toISOString().split('T')[0];
-        }
-
-        document.getElementById('addSaleDate').value = getBusinessDate();
-        document.getElementById('addExpDate').value = getBusinessDate();
-        document.getElementById('dailyReportDate').value = getBusinessDate();
-        document.getElementById('payoutDate').value = getBusinessDate();
-
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
-
-        refreshAll();
-
-        // ==========================================
-        // 2. FIREBASE CLOUD SYNC
+        // 1. FIREBASE SETUP
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAgsaNY5g8jUhLzK_24Hzs9XzJ_DLfRDv4",
@@ -524,32 +552,46 @@
             measurementId: "G-8HR1WVBYD4"
         };
 
-        let db;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            
-            db.ref('sales').on('value', (s) => { if(s.exists()) { sales = Object.values(s.val()); localStorage.setItem('stackd_sales', JSON.stringify(sales)); refreshAll(); } });
-            db.ref('expenses').on('value', (s) => { if(s.exists()) { expenses = Object.values(s.val()); localStorage.setItem('stackd_expenses', JSON.stringify(expenses)); refreshAll(); } });
-            db.ref('salaryPayouts').on('value', (s) => { if(s.exists()) { salaryPayouts = Object.values(s.val()); localStorage.setItem('stackd_payouts', JSON.stringify(salaryPayouts)); refreshAll(); } });
-            db.ref('transfers').on('value', (s) => { if(s.exists()) { transfers = Object.values(s.val()); localStorage.setItem('stackd_transfers', JSON.stringify(transfers)); refreshAll(); } });
-            
-            db.ref('.info/connected').on('value', function(snap) {
-                const pill = document.getElementById('headerProfitPill');
-                if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
-                else { pill.textContent = "Offline Mode"; pill.className = "net-pill negative"; }
-            });
-        } catch (e) { console.error("Firebase error", e); }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let sales = []; let expenses = []; let salaryPayouts = []; let transfers = []; let currentFilter = 'All';
+        const generateID = () => Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
+        const salaryTargets = { Ahmed: 20000, Kainat: 20000, Muqadas: 20000, Amroz: 25000 };
+        const TOTAL_SALARY_GOAL = 85000;
+
+        function getBusinessDate() {
+            const now = new Date(); if (now.getHours() < 4) now.setDate(now.getDate() - 1);
+            const offset = now.getTimezoneOffset(); const localNow = new Date(now.getTime() - (offset*60*1000));
+            return localNow.toISOString().split('T')[0];
+        }
+
+        document.getElementById('addSaleDate').value = getBusinessDate(); document.getElementById('addExpDate').value = getBusinessDate(); document.getElementById('dailyReportDate').value = getBusinessDate(); document.getElementById('payoutDate').value = getBusinessDate();
+
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+
+        // ==========================================
+        // 2. CLOUD SYNCING
+        // ==========================================
+        const dbSales = db.ref('sales'); const dbExpenses = db.ref('expenses'); const dbPayouts = db.ref('salaryPayouts'); const dbTransfers = db.ref('transfers');
+
+        dbSales.on('value', (s) => { sales = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbExpenses.on('value', (s) => { expenses = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbPayouts.on('value', (s) => { salaryPayouts = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbTransfers.on('value', (s) => { transfers = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+
+        db.ref('.info/connected').on('value', function(snap) {
+            const pill = document.getElementById('headerProfitPill');
+            if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
+            else { pill.textContent = "Offline Mode"; pill.className = "net-pill negative"; }
+        });
 
         function refreshAll() {
             renderDashboard(); renderCategoryBreakdown(); renderGroupedFeed(); renderSalaryVault();
-            const activeSalesFilter = document.querySelector('#salesFilters .chip.active');
-            if(activeSalesFilter) activeSalesFilter.click();
+            const activeSalesFilter = document.querySelector('#salesFilters .chip.active'); if(activeSalesFilter) activeSalesFilter.click();
         }
 
-        // ==========================================
-        // 3. CORE BALANCES MATH
-        // ==========================================
         function getBalances() {
             let till = 0; let hand = 0; let bank = 0; let vault = 0;
             sales.forEach(s => {
@@ -559,14 +601,12 @@
             });
             expenses.forEach(e => {
                 if(e.category === 'Salaries & Wages') { vault += e.amount; }
-                if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { bank -= e.amount; } 
-                else if (e.paymentMethod === 'Hand') { hand -= e.amount; } else { till -= e.amount; } 
+                if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { bank -= e.amount; } else if (e.paymentMethod === 'Hand') { hand -= e.amount; } else { till -= e.amount; } 
             });
             salaryPayouts.forEach(p => {
                 vault -= p.amount;
                 if (p.paymentMethod === 'Bank') bank -= p.amount; else if (p.paymentMethod === 'Hand') hand -= p.amount; else till -= p.amount;
             });
-            
             const sortedT = [...transfers].sort((a, b) => a.id.localeCompare(b.id));
             sortedT.forEach(t => {
                 if(t.direction === 'TillToHand') { till -= t.amount; hand += t.amount; } if(t.direction === 'TillToBank') { till -= t.amount; bank += t.amount; }
@@ -581,15 +621,13 @@
         }
 
         // ==========================================
-        // 4. UI RENDERING
+        // 3. UI RENDERING
         // ==========================================
         function renderDashboard() {
             const totalS = sales.reduce((sum, s) => sum + s.total, 0); const totalE = expenses.reduce((sum, e) => sum + e.amount, 0); const profit = totalS - totalE;
             const bals = getBalances();
-
             document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
             document.getElementById('balTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
-
             document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`; document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
             const np = document.getElementById('dashNetProfit'); np.textContent = `Rs ${profit.toLocaleString()}`; np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
         }
@@ -608,10 +646,8 @@
             else if (period === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); filtered = sales.filter(s => s.date === y.toISOString().split('T')[0]); } 
             else if (period === 'week') { const d = new Date(today); d.setDate(d.getDate() - 7); filtered = sales.filter(s => s.date >= d.toISOString().split('T')[0]); } 
             else if (period === 'month') { filtered = sales.filter(s => s.date.startsWith(today.substring(0, 7))); }
-            
             filtered.sort((a,b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             document.getElementById('salesFilterTotal').textContent = `Rs ${filtered.reduce((a,b) => a+b.total, 0).toLocaleString()}`;
-            
             const list = document.getElementById('salesOnlyList'); list.innerHTML = '';
             const grouped = {}; filtered.forEach(s => { if(!grouped[s.date]) grouped[s.date] = []; grouped[s.date].push(s); });
             for(const date in grouped) {
@@ -623,7 +659,6 @@
         function renderGroupedFeed() {
             const feed = document.getElementById('activityFeed'); feed.innerHTML = '';
             let combined = [...sales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...expenses.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
-            
             combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             if (currentFilter !== 'All') { if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale); else combined = combined.filter(i => !i.isSale && i.category === currentFilter); }
             const grouped = {}; combined.forEach(item => { if(!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
@@ -655,15 +690,13 @@
             if(taken > 0) {
                 const dest = document.getElementById('denomDest').value;
                 const t = { id: generateID(), date: getBusinessDate(), direction: dest === 'Bank' ? 'TillToBank' : 'TillToHand', amount: taken };
-                if(db) dbTransfers.child(t.id).set(t); else { transfers.push(t); refreshAll(); }
+                dbTransfers.child(t.id).set(t);
             }
-            
             const bankConf = document.getElementById('shiftBankConfirm').value;
             if(bankConf) adjustHolding('Bank', parseFloat(bankConf));
             
             showToast("Shift Closed! Downloading Report...");
             document.querySelectorAll('.denom-row input').forEach(i => i.value=''); document.getElementById('denomTaken').value=''; document.getElementById('shiftBankConfirm').value=''; document.getElementById('shiftCardConfirm').value=''; calcDenom();
-            
             document.getElementById('exportRange').value = 'all'; generateReport('csv');
         }
 
@@ -697,18 +730,16 @@
         function handleFundVault(e) {
             e.preventDefault();
             const exp = { id: generateID(), date: getBusinessDate(), type: 'Expense', category: 'Salaries & Wages', paymentMethod: document.getElementById('vaultFundSource').value, details: 'Manual Vault Funding', amount: parseFloat(document.getElementById('vaultFundAmt').value) };
-            if(db) dbExpenses.child(exp.id).set(exp); else { expenses.push(exp); refreshAll(); }
-            e.target.reset(); showToast("Vault Funded!");
+            dbExpenses.child(exp.id).set(exp); e.target.reset(); showToast("Vault Funded!");
         }
 
         function handlePayoutSubmit(e) {
             e.preventDefault();
             const p = { id: generateID(), date: document.getElementById('payoutDate').value, employee: document.getElementById('payoutEmployee').value, paymentMethod: document.getElementById('payoutMethod').value, details: `Vault Payout`, amount: parseFloat(document.getElementById('payoutAmount').value) };
-            if(db) dbPayouts.child(p.id).set(p); else { salaryPayouts.push(p); refreshAll(); }
-            e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate(); showToast("Payout Processed!");
+            dbPayouts.child(p.id).set(p); e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate(); showToast("Payout Processed!");
         }
 
-        function handleTransfer(e) { e.preventDefault(); const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) }; if(db) dbTransfers.child(t.id).set(t); else { transfers.push(t); refreshAll();} e.target.reset(); showToast("Transfer Saved!"); }
+        function handleTransfer(e) { e.preventDefault(); const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) }; dbTransfers.child(t.id).set(t); e.target.reset(); showToast("Transfer Saved!"); }
 
         function adjustHolding(account, overrideVal) {
             const input = document.getElementById(`adj${account}Amt`);
@@ -717,7 +748,7 @@
             const current = getBalances()[account.toLowerCase()]; const diff = target - current;
             if(diff === 0) return showToast("Already accurate!");
             const adj = { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: account, amount: diff };
-            if(db) dbTransfers.child(adj.id).set(adj); else { transfers.push(adj); refreshAll(); }
+            dbTransfers.child(adj.id).set(adj);
             if(input) input.value = ''; showToast(`${account} fixed to Rs ${target}`);
         }
 
@@ -743,20 +774,17 @@
             e.preventDefault(); const till = parseFloat(document.getElementById('addSaleTill').value) || 0; const hand = parseFloat(document.getElementById('addSaleHand').value) || 0; const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
             if (till + hand + online === 0) return alert('Enter an amount');
             const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Till: ${till} | Hand: ${hand} | Online: ${online}`, total: till + hand + online };
-            if(db) dbSales.child(sale.id).set(sale); else { sales.push(sale); refreshAll(); }
-            e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); showToast("Sale Logged!"); switchTab('dashboard');
+            dbSales.child(sale.id).set(sale); e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); showToast("Sale Logged!"); switchTab('dashboard');
         }
 
         function handleExpenseSubmit(e) {
             e.preventDefault(); const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
-            if(db) dbExpenses.child(exp.id).set(exp); else { expenses.push(exp); refreshAll(); }
-            e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); showToast("Expense Logged!"); switchTab('dashboard');
+            dbExpenses.child(exp.id).set(exp); e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); showToast("Expense Logged!"); switchTab('dashboard');
         }
 
         function quickAddSalary() {
             const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Bank', details: 'Daily Salary Reserve', amount: 4000 };
-            if(db) dbExpenses.child(exp.id).set(exp); else { expenses.push(exp); refreshAll(); }
-            showToast("Vault Funded!"); switchTab('salary-vault');
+            dbExpenses.child(exp.id).set(exp); showToast("Vault Funded!"); switchTab('salary-vault');
         }
 
         function deleteEntry(id, type) { if (!confirm('Delete permanently?')) return; if (type === 'Sale') dbSales.child(id).remove(); else dbExpenses.child(id).remove(); }
@@ -774,24 +802,26 @@
 
         function saveEdit() {
             const id = document.getElementById('editId').value; const type = document.getElementById('editType').value;
-            if (type === 'Sale') { const item = sales.find(s => s.id === id); if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); if(db) dbSales.child(id).set(item); } } 
-            else { const item = expenses.find(e => e.id === id); if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); if(db) dbExpenses.child(id).set(item); } }
+            if (type === 'Sale') { const item = sales.find(s => s.id === id); if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); dbSales.child(id).set(item); } } 
+            else { const item = expenses.find(e => e.id === id); if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); dbExpenses.child(id).set(item); } }
             showToast("Saved!"); closeModal('editModal');
         }
 
-        // CSV PARSER
+        // ==========================================
+        // ROBUST CSV IMPORTER
+        // ==========================================
         function importCSV(event) {
             const file = event.target.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const lines = e.target.result.split('\n'); let isTxSection = false;
-                showToast("Restoring Data...");
+                showToast("Restoring Data to Cloud...");
                 for(let line of lines) {
                     if(line.includes("DETAILED TRANSACTIONS")) { isTxSection = true; continue; }
                     if(isTxSection) {
                         if(line.includes("Date,Type,Category")) continue; if(line.trim() === '') continue; 
                         
-                        // Parse CSV line properly ignoring commas inside quotes
+                        // Parse CSV properly handling quotes
                         let parts = []; let inQuotes = false; let currentPart = '';
                         for(let i=0; i<line.length; i++){
                             const char = line[i];
@@ -802,14 +832,14 @@
                         parts.push(currentPart.trim());
                         if(parts.length < 5) continue;
                         
-                        const d = parts[0]||''; const t = parts[1]||''; const c = parts[2]||''; const pm = parts[3]||'Till'; const desc = parts[4]||''; const amt = parseFloat(parts[5]||'0');
+                        const d = (parts[0]||'').replace(/"/g, ''); const t = (parts[1]||'').replace(/"/g, ''); const c = (parts[2]||'').replace(/"/g, ''); const pm = (parts[3]||'Till').replace(/"/g, '').replace("-", "Till"); const desc = (parts[4]||'').replace(/"/g, ''); const amt = parseFloat((parts[5]||'0').replace(/"/g, ''));
                         if(isNaN(amt)) continue;
 
-                        if(t === 'Sale') { const s = { id: generateID(), date: d, type: 'Sale', category: c, details: desc, total: amt }; if(db) dbSales.child(s.id).set(s); else sales.push(s); } 
-                        else if(t === 'Expense') { const ex = { id: generateID(), date: d, type: 'Expense', category: c, paymentMethod: pm, details: desc, amount: amt }; if(db) dbExpenses.child(ex.id).set(ex); else expenses.push(ex); }
+                        if(t === 'Sale') { const s = { id: generateID(), date: d, type: 'Sale', category: c, details: desc, total: amt }; dbSales.child(s.id).set(s); } 
+                        else if(t === 'Expense') { const ex = { id: generateID(), date: d, type: 'Expense', category: c, paymentMethod: pm, details: desc, amount: amt }; dbExpenses.child(ex.id).set(ex); }
                     }
                 }
-                setTimeout(() => { if(!db) refreshAll(); showToast("Restore Complete!"); }, 1000);
+                setTimeout(() => { showToast("Restore Complete!"); }, 1500);
             };
             reader.readAsText(file);
         }
