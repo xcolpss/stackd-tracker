@@ -293,6 +293,7 @@
                             <option value="Hand">Cash (Hand)</option>
                             <option value="Bank">Online / Bank Account</option>
                             <option value="Card">Bank Card</option>
+                            <option value="SalaryVault">Salary Vault (Loan / Draw)</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Description</label><input type="text" id="addExpItem" required></div>
@@ -463,6 +464,7 @@
                     <option value="Hand">Cash (Hand)</option>
                     <option value="Bank">Online / Bank Transfer</option>
                     <option value="Card">Bank Card</option>
+                    <option value="SalaryVault">Salary Vault (Loan / Draw)</option>
                 </select>
             </div>
             <div class="form-group"><label>Description</label><input type="text" id="editDetails" required></div>
@@ -628,9 +630,17 @@
             });
             (expenses||[]).forEach(e => {
                 if(e.category === 'Salaries & Wages') { v += (e.amount||0); }
-                if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { b -= (e.amount||0); } 
-                else if (e.paymentMethod === 'Hand') { h -= (e.amount||0); }
-                else { c -= (e.amount||0); }
+                
+                // If paid from Salary Vault (loan/draw), it reduces the Vault instead of liquid bank/till/hand
+                if (e.paymentMethod === 'SalaryVault') {
+                    v -= (e.amount||0);
+                } else if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { 
+                    b -= (e.amount||0); 
+                } else if (e.paymentMethod === 'Hand') { 
+                    h -= (e.amount||0); 
+                } else { 
+                    c -= (e.amount||0); 
+                }
             });
             (salaryPayouts||[]).forEach(p => {
                 v -= (p.amount||0);
@@ -766,7 +776,8 @@
             for(const date in grouped) {
                 feed.innerHTML += `<div class="date-header">${date}</div>`;
                 grouped[date].forEach(item => {
-                    const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Till');
+                    const pmClean = item.paymentMethod === 'SalaryVault' ? 'Salary Vault Loan' : (item.paymentMethod || 'Till');
+                    const meth = item.isSale ? '' : ` | ${pmClean}`;
                     feed.innerHTML += `<div class="tx-card">
                         <div class="tx-left">
                             <div class="tx-title">${item.details}</div>
@@ -807,7 +818,7 @@
             
             let todayCashOut = 0;
             dExps.forEach(e => {
-                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card' && e.paymentMethod !== 'Hand') {
+                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card' && e.paymentMethod !== 'Hand' && e.paymentMethod !== 'SalaryVault') {
                     todayCashOut += (e.amount||0);
                 }
             });
@@ -831,7 +842,6 @@
             const vaultBal = getBalances().vault;
             if(document.getElementById('vaultBalance')) document.getElementById('vaultBalance').textContent = `Rs ${vaultBal.toLocaleString()}`;
 
-            // Calculate exact days left in the current month
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
@@ -1107,7 +1117,7 @@
             csvContent += `DAILY SUMMARY REPORT,${dateText}\nTotal Sales (Rs),Total Expenses (Rs),Net Profit / Savings (Rs)\n${tSales},${tExp},${tSales - tExp}\n\n`;
             csvContent += "DETAILED TRANSACTIONS\nDate,Type,Category,Payment Method,Description,Amount (Rs)\n";
             data.forEach(item => {
-                const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod || "Cash");
+                const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod === 'SalaryVault' ? 'Salary Vault Loan' : (item.paymentMethod || "Cash"));
                 csvContent += `"${item.date}","${type}","${cat}","${pm}","${(item.details||'').replace(/"/g, '""')}","${item.displayAmount}"\n`;
             });
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Stackd_${dateText.replace(/ /g, "_")}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); showToast("Excel Downloaded!");
