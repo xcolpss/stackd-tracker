@@ -211,16 +211,17 @@
             </div>
 
             <div class="form-card">
-                <h3 style="margin-bottom:15px; color:var(--yellow);">Transfer Money</h3>
+                <h3 style="margin-bottom:15px; color:var(--yellow);">Transfer Money (All Scenarios)</h3>
                 <form onsubmit="handleTransfer(event)">
                     <div class="form-group">
                         <label>Direction</label>
                         <select id="transferDir" required>
                             <option value="TillToHand">Till ➡️ Hand</option>
                             <option value="TillToBank">Till ➡️ Bank/Online</option>
+                            <option value="HandToTill">Hand ➡️ Till</option>
                             <option value="HandToBank">Hand ➡️ Bank/Online</option>
-                            <option value="BankToHand">Bank/Online ➡️ Hand (Withdrawal)</option>
                             <option value="BankToTill">Bank/Online ➡️ Till</option>
+                            <option value="BankToHand">Bank/Online ➡️ Hand</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Amount (Rs)</label><input type="number" id="transferAmt" required min="1" inputmode="decimal"></div>
@@ -352,6 +353,7 @@
             <div class="vault-pill">
                 <h3>Total Salary Reserve (The Vault)</h3>
                 <h1 id="vaultBalance">Rs 0</h1>
+                <p id="vaultDailyTarget" style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;"></p>
             </div>
             
             <div class="form-card">
@@ -637,13 +639,12 @@
                 else c -= (p.amount||0);
             });
             (transfers||[]).forEach(t => {
-                if(t.direction === 'CashToBank') { c -= (t.amount||0); b += (t.amount||0); }
-                else if(t.direction === 'BankToCash') { b -= (t.amount||0); c += (t.amount||0); }
-                else if(t.direction === 'TillToHand') { c -= (t.amount||0); h += (t.amount||0); }
+                if(t.direction === 'TillToHand') { c -= (t.amount||0); h += (t.amount||0); }
                 else if(t.direction === 'TillToBank') { c -= (t.amount||0); b += (t.amount||0); }
+                else if(t.direction === 'HandToTill') { h -= (t.amount||0); c += (t.amount||0); }
                 else if(t.direction === 'HandToBank') { h -= (t.amount||0); b += (t.amount||0); }
-                else if(t.direction === 'BankToHand') { b -= (t.amount||0); h += (t.amount||0); }
                 else if(t.direction === 'BankToTill') { b -= (t.amount||0); c += (t.amount||0); }
+                else if(t.direction === 'BankToHand') { b -= (t.amount||0); h += (t.amount||0); }
                 else if(t.direction === 'Adjustment') {
                     if(t.account === 'Cash' || t.account === 'Till') c += (t.amount||0);
                     if(t.account === 'Hand') h += (t.amount||0);
@@ -659,8 +660,6 @@
         // ==========================================
         function renderDashboard() {
             const bals = getBalances();
-            
-            // MATH CORRECTION: Net P&L now exclusively calculates physical/liquid cash on hand based on your request.
             const profit = bals.till + bals.hand + bals.bank; 
 
             if(document.getElementById('dashTill')) document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`;
@@ -826,11 +825,31 @@
         }
 
         // ==========================================
-        // FEATURE: SALARY VAULT
+        // FEATURE: SALARY VAULT & DAILY TARGETS
         // ==========================================
         function renderSalaryVault() {
             const vaultBal = getBalances().vault;
             if(document.getElementById('vaultBalance')) document.getElementById('vaultBalance').textContent = `Rs ${vaultBal.toLocaleString()}`;
+
+            // Calculate exact days left in the current month
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+            const currentDay = now.getDate();
+            const daysLeft = Math.max(1, (lastDayOfMonth - currentDay) + 1);
+            
+            const deficit = Math.max(0, TOTAL_SALARY_GOAL - vaultBal);
+            const dailyTarget = Math.ceil(deficit / daysLeft);
+
+            const targetEl = document.getElementById('vaultDailyTarget');
+            if(targetEl) {
+                if(deficit > 0) {
+                    targetEl.textContent = `Target: Need Rs ${dailyTarget.toLocaleString()} / day for the next ${daysLeft} days to hit 85k`;
+                } else {
+                    targetEl.textContent = `Goal reached! Monthly salary reserve is fully funded.`;
+                }
+            }
 
             const empUI = document.getElementById('employeeProgressBars');
             if(empUI) {
@@ -843,8 +862,8 @@
                         <div class="progress-bar-bg" style="height:16px;"><div class="progress-fill ${overallPct===100?'full':''}" style="width: ${overallPct}%;"></div></div>
                     </div><hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">`;
                 
-                const currentMonth = getBusinessDate().substring(0, 7); 
-                const monthPayouts = (salaryPayouts||[]).filter(p => (p.date||'').startsWith(currentMonth));
+                const currentMonthStr = getBusinessDate().substring(0, 7); 
+                const monthPayouts = (salaryPayouts||[]).filter(p => (p.date||'').startsWith(currentMonthStr));
                 
                 for(const [emp, target] of Object.entries(salaryTargets)) {
                     const paid = monthPayouts.filter(p => p.employee === emp).reduce((a,b) => a+(b.amount||0), 0); 
