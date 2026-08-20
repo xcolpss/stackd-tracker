@@ -37,7 +37,7 @@
         header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-size: 1.25rem; font-weight: 900; letter-spacing: 2px; color: var(--yellow); display: flex; align-items: center; gap: 10px; }
         .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); transition: 0.3s; }
+        .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); }
         .positive { color: var(--green); } .negative { color: var(--red); }
 
         /* Sidebar Menu */
@@ -143,10 +143,8 @@
 </head>
 <body>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast">Saved Successfully!</div>
 
-    <!-- Sidebar Menu Overlay & Drawer -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>MENU</h2></div>
@@ -156,7 +154,7 @@
         <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Shift & Cash Closer</a>
         <a class="menu-link" onclick="switchTab('balances'); toggleMenu();">🏦 Accounts & Transfers</a>
         <a class="menu-link" onclick="switchTab('salary-vault'); toggleMenu();">💰 Salary Vault</a>
-        <a class="menu-link" onclick="switchTab('export'); toggleMenu();">⬇️ Export / Backup</a>
+        <a class="menu-link" onclick="switchTab('export'); toggleMenu();">⬇️ Export to Excel/PDF</a>
     </div>
 
     <header>
@@ -250,6 +248,7 @@
             <div class="form-card" style="border-color:var(--red);">
                 <h3 style="margin-bottom:15px; color:var(--red);">Fix / Adjust Balances</h3>
                 <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below to forcefully correct the app's math without affecting profit/loss history.</p>
+                
                 <div class="form-group"><label>Exact Till Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjTillAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button></div></div>
                 <div class="form-group"><label>Exact Hand Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjHandAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button></div></div>
                 <div class="form-group"><label>Exact Bank / Online</label><div style="display:flex; gap:10px;"><input type="number" id="adjBankAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button></div></div>
@@ -282,19 +281,19 @@
             </div>
             <div class="form-card">
                 <form id="saleForm" style="display: none;" onsubmit="handleSaleSubmit(event)">
-                    <div class="form-group"><label>Shift Date</label><input type="date" id="addSaleDate" required></div>
-                    <div class="form-group"><label>Cash to Till (Rs)</label><input type="number" id="addSaleTill" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Cash to Hand (Rs)</label><input type="number" id="addSaleHand" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Online/Bank (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Business Date (Auto Shift)</label><input type="date" id="addSaleDate" required></div>
+                    <div class="form-group"><label>Cash (Rs)</label><input type="number" id="addSaleCash" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Card (Rs)</label><input type="number" id="addSaleCard" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Online (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
                     <button type="submit" class="btn-submit">Log Sale</button>
                 </form>
                 <form id="expenseForm" onsubmit="handleExpenseSubmit(event)">
-                    <div class="form-group"><label>Shift Date</label><input type="date" id="addExpDate" required></div>
+                    <div class="form-group"><label>Business Date (Auto Shift)</label><input type="date" id="addExpDate" required></div>
                     <div class="form-group">
                         <label>Category</label>
                         <select id="addExpCat" required>
                             <option value="Food & Ingredients">Food & Ingredients</option>
-                            <option value="Salaries & Wages">Salaries & Wages (Adds to Vault)</option>
+                            <option value="Salaries & Wages">Salaries & Wages (Add to Vault)</option>
                             <option value="Staff Expenses">Staff Expenses</option>
                             <option value="Owner Expenses">Owner Expenses</option>
                             <option value="Packaging">Packaging</option>
@@ -305,10 +304,10 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Paid From</label>
+                        <label>Paid Via</label>
                         <select id="addExpMethod" required>
-                            <option value="Till">Cash (From Till)</option>
-                            <option value="Hand">Cash (From Hand)</option>
+                            <option value="Till">Cash (Till)</option>
+                            <option value="Hand">Cash (Hand)</option>
                             <option value="Bank">Online / Bank Account</option>
                             <option value="Card">Bank Card</option>
                         </select>
@@ -321,8 +320,27 @@
             </div>
         </section>
 
-        <!-- 6. SHIFT END CLOSER -->
+        <!-- 6. DAILY SHIFT REPORT & CLOSER -->
         <section id="view-daily-report" class="view-section">
+            <div class="form-card">
+                <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Daily Shift Report</h3>
+                <div class="form-group">
+                    <label>Select Shift Date</label>
+                    <input type="date" id="dailyReportDate" onchange="generateDailyReport()">
+                </div>
+                
+                <div class="stats-split" style="margin-top:20px; border-top:none;">
+                    <div class="stat-box"><div class="sub-label">Sales Today</div><div class="sub-value positive" id="drSales">Rs 0</div></div>
+                    <div class="stat-box"><div class="sub-label">Expenses Today</div><div class="sub-value negative" id="drExpenses">Rs 0</div></div>
+                </div>
+                
+                <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin-top:20px; text-align:center; border: 1px solid var(--border);">
+                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:5px;">Remaining Cash Drawer Balance</div>
+                    <div style="font-size:2rem; font-weight:800; color:var(--yellow);" id="drCashDrawer">Rs 0</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">(Today's Cash Sales) - (Today's Cash Expenses)</div>
+                </div>
+            </div>
+
             <div class="form-card" style="border-color:var(--yellow);">
                 <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Shift End & Till Calculator</h3>
                 <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Count the notes in the Till at the end of the shift.</p>
@@ -367,8 +385,12 @@
         <!-- 7. SALARY VAULT -->
         <section id="view-salary-vault" class="view-section">
             <div class="vault-pill">
-                <h3>Total Salary Reserve (The Vault)</h3>
+                <h3>Total Salary Reserve Available</h3>
                 <h1 id="vaultBalance">Rs 0</h1>
+            </div>
+
+            <div class="form-card" id="employeeProgressBars">
+                <!-- Injected via JS -->
             </div>
 
             <div class="form-card">
@@ -385,10 +407,6 @@
                     </div>
                     <button type="submit" class="btn-submit" style="background:var(--green); color:#000;">+ Move Money to Vault</button>
                 </form>
-            </div>
-
-            <div class="form-card" id="employeeProgressBars">
-                <!-- Injected via JS -->
             </div>
 
             <div class="form-card">
@@ -481,7 +499,7 @@
                 <select id="editExpMethod">
                     <option value="Till">Cash (Till)</option>
                     <option value="Hand">Cash (Hand)</option>
-                    <option value="Online">Online / Bank Transfer</option>
+                    <option value="Bank">Online / Bank Transfer</option>
                     <option value="Card">Bank Card</option>
                 </select>
             </div>
@@ -507,7 +525,7 @@
 
     <script>
         // ==========================================
-        // 1. FIREBASE SETUP & VARIABLES
+        // 1. FIREBASE SETUP
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAgsaNY5g8jUhLzK_24Hzs9XzJ_DLfRDv4",
@@ -516,7 +534,8 @@
             projectId: "stackd-2d64b",
             storageBucket: "stackd-2d64b.firebasestorage.app",
             messagingSenderId: "798632697218",
-            appId: "1:798632697218:web:97fd996539e977e2bf839b"
+            appId: "1:798632697218:web:97fd996539e977e2bf839b",
+            measurementId: "G-8HR1WVBYD4"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -531,8 +550,10 @@
         const salaryTargets = { Ahmed: 20000, Kainat: 20000, Muqadas: 20000, Amroz: 25000 };
         const TOTAL_SALARY_GOAL = 85000;
 
+        // Custom ID generator that acts as a timestamp for perfect chronological sorting
         const generateID = () => Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
 
+        // Calculate business shift date (2 PM to 4 AM shift logic)
         function getBusinessDate() {
             const now = new Date();
             if (now.getHours() < 4) now.setDate(now.getDate() - 1);
@@ -541,43 +562,51 @@
             return localNow.toISOString().split('T')[0];
         }
 
+        // Setup Dates
         document.getElementById('addSaleDate').value = getBusinessDate();
         document.getElementById('addExpDate').value = getBusinessDate();
         document.getElementById('dailyReportDate').value = getBusinessDate();
         document.getElementById('payoutDate').value = getBusinessDate();
 
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+        // Menu & UI Toggles
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
 
         // ==========================================
-        // 2. CLOUD SYNCING & BALANCES
+        // 2. CLOUD SYNCING & BALANCES (Using original correct folders)
         // ==========================================
-        // USING THE ORIGINAL WORKING FOLDER "stackdData"
-        db.ref('stackdData').on('value', (snapshot) => {
-            const data = snapshot.val() || {};
-            sales = data.sales ? Object.values(data.sales) : [];
-            expenses = data.expenses ? Object.values(data.expenses) : [];
-            salaryPayouts = data.salaryPayouts ? Object.values(data.salaryPayouts) : [];
-            transfers = data.transfers ? Object.values(data.transfers) : [];
-            refreshAll();
-        });
+        const dbSales = db.ref('sales');
+        const dbExpenses = db.ref('expenses');
+        const dbPayouts = db.ref('salaryPayouts');
+        const dbTransfers = db.ref('transfers');
+
+        dbSales.on('value', (s) => { sales = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbExpenses.on('value', (s) => { expenses = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbPayouts.on('value', (s) => { salaryPayouts = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        dbTransfers.on('value', (s) => { transfers = s.val() ? Object.values(s.val()) : []; refreshAll(); });
 
         db.ref('.info/connected').on('value', function(snap) {
             const pill = document.getElementById('headerProfitPill');
+            if(!pill) return;
             if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
             else { pill.textContent = "Offline Mode"; pill.className = "net-pill negative"; }
         });
 
-        function syncToCloud() {
-            let sObj = {}; sales.forEach(s => sObj[s.id] = s);
-            let eObj = {}; expenses.forEach(e => eObj[e.id] = e);
-            let pObj = {}; salaryPayouts.forEach(p => pObj[p.id] = p);
-            let tObj = {}; transfers.forEach(t => tObj[t.id] = t);
-            db.ref('stackdData').set({ sales: sObj, expenses: eObj, salaryPayouts: pObj, transfers: tObj });
-        }
-
         function refreshAll() {
-            renderDashboard(); renderCategoryBreakdown(); renderGroupedFeed(); renderSalaryVault();
+            renderDashboard();
+            renderCategoryBreakdown();
+            renderGroupedFeed();
+            generateDailyReport();
+            renderSalaryVault();
             const activeSalesFilter = document.querySelector('#salesFilters .chip.active');
             if(activeSalesFilter) activeSalesFilter.click();
         }
@@ -586,10 +615,11 @@
             let till = 0; let hand = 0; let bank = 0; let vault = 0;
             
             sales.forEach(s => {
-                const details = s.details || "";
-                const tMatch = details.match(/Till:\s*(\d+(\.\d+)?)/); 
-                const hMatch = details.match(/Hand:\s*(\d+(\.\d+)?)/); 
+                const details = s.details || '';
+                const tMatch = details.match(/Till:\s*(\d+(\.\d+)?)/);
+                const hMatch = details.match(/Hand:\s*(\d+(\.\d+)?)/);
                 const oMatch = details.match(/Online:\s*(\d+(\.\d+)?)/);
+                
                 if(tMatch || hMatch || oMatch) { 
                     till += tMatch ? parseFloat(tMatch[1]) : 0; 
                     hand += hMatch ? parseFloat(hMatch[1]) : 0; 
@@ -599,15 +629,17 @@
                     const oldMatch = details.match(/Cash:\s*(\d+(\.\d+)?)/); 
                     if(oldMatch) till += parseFloat(oldMatch[1]); 
                     else if(details === "Imported Data") till += s.total; 
-                    else till += s.total;
+                    else till += s.total; 
                 }
             });
+            
             expenses.forEach(e => {
                 if(e.category === 'Salaries & Wages') { vault += e.amount; }
                 if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { bank -= e.amount; } 
                 else if (e.paymentMethod === 'Hand') { hand -= e.amount; } 
                 else { till -= e.amount; } 
             });
+            
             salaryPayouts.forEach(p => {
                 vault -= p.amount;
                 if (p.paymentMethod === 'Bank') bank -= p.amount; 
@@ -622,9 +654,11 @@
                 if(t.direction === 'HandToBank') { hand -= t.amount; bank += t.amount; } 
                 if(t.direction === 'BankToHand') { bank -= t.amount; hand += t.amount; }
                 if(t.direction === 'BankToTill') { bank -= t.amount; till += t.amount; }
-                if(t.direction === 'Adjustment') { 
-                    if(t.account === 'Till') { till += t.amount; } if(t.account === 'Hand') { hand += t.amount; }
-                    if(t.account === 'Bank') { bank += t.amount; } if(t.account === 'Vault') { vault += t.amount; }
+                if(t.direction === 'Adjustment') {
+                    if(t.account === 'Till') { till = t.amount; } 
+                    if(t.account === 'Hand') { hand = t.amount; }
+                    if(t.account === 'Bank') { bank = t.amount; } 
+                    if(t.account === 'Vault') { vault = t.amount; }
                 }
             });
             return { till, hand, bank, vault };
@@ -634,61 +668,175 @@
         // 3. UI RENDERING
         // ==========================================
         function renderDashboard() {
-            const totalS = sales.reduce((sum, s) => sum + s.total, 0); const totalE = expenses.reduce((sum, e) => sum + e.amount, 0); const profit = totalS - totalE;
+            const totalS = sales.reduce((sum, s) => sum + s.total, 0);
+            const totalE = expenses.reduce((sum, e) => sum + e.amount, 0);
+            const profit = totalS - totalE;
             const bals = getBalances();
 
-            document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
-            document.getElementById('balTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
-            document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`; document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
+            document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`;
+            document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
+            document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
             
-            const np = document.getElementById('dashNetProfit'); np.textContent = `Rs ${profit.toLocaleString()}`; np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
+            document.getElementById('balTill').textContent = `Rs ${bals.till.toLocaleString()}`;
+            document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
+            document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
+
+            document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`;
+            document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
+            
+            const np = document.getElementById('dashNetProfit');
+            np.textContent = `Rs ${profit.toLocaleString()}`;
+            np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
         }
 
         function renderCategoryBreakdown() {
-            const cats = {}; expenses.forEach(e => { cats[e.category || 'Operating Expenses'] = (cats[e.category] || 0) + e.amount; });
-            const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]); const list = document.getElementById('categoryBreakdownList'); list.innerHTML = '';
+            const cats = {};
+            expenses.forEach(e => { cats[e.category || 'Operating Expenses'] = (cats[e.category] || 0) + e.amount; });
+            const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+            const list = document.getElementById('categoryBreakdownList');
+            list.innerHTML = '';
             const colors = { 'Food & Ingredients': 'var(--yellow)', 'Salaries & Wages': 'var(--green)', 'Owner Expenses': 'var(--red)', 'Staff Expenses': 'var(--blue)', 'Business Reinvestment': 'var(--purple)' };
-            sorted.forEach(([cat, amt]) => { list.innerHTML += `<div class="category-row"><div class="category-meta"><div class="category-indicator" style="background: ${colors[cat] || '#8e8e9a'}"></div><span class="cat-name">${cat}</span></div><span class="cat-amount">Rs ${amt.toLocaleString()}</span></div>`; });
+
+            sorted.forEach(([cat, amt]) => {
+                list.innerHTML += `<div class="category-row">
+                    <div class="category-meta"><div class="category-indicator" style="background: ${colors[cat] || '#8e8e9a'}"></div><span class="cat-name">${cat}</span></div>
+                    <span class="cat-amount">Rs ${amt.toLocaleString()}</span>
+                </div>`;
+            });
         }
 
         function filterSalesView(period, btn) {
-            document.querySelectorAll('#salesFilters .chip').forEach(c => c.classList.remove('active')); btn.classList.add('active');
-            const today = getBusinessDate(); let filtered = [...sales];
-            if(period === 'today') { filtered = filtered.filter(s => s.date === today); } 
-            else if (period === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); filtered = filtered.filter(s => s.date === y.toISOString().split('T')[0]); } 
-            else if (period === 'week') { const d = new Date(today); d.setDate(d.getDate() - 7); filtered = filtered.filter(s => s.date >= d.toISOString().split('T')[0]); } 
-            else if (period === 'month') { filtered = filtered.filter(s => s.date.startsWith(today.substring(0, 7))); }
+            document.querySelectorAll('#salesFilters .chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
             
-            filtered.sort((a,b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
-            document.getElementById('salesFilterTotal').textContent = `Rs ${filtered.reduce((a,b) => a+b.total, 0).toLocaleString()}`;
+            const today = getBusinessDate();
+            let filtered = sales;
             
-            const list = document.getElementById('salesOnlyList'); list.innerHTML = '';
-            const grouped = {}; filtered.forEach(s => { if(!grouped[s.date]) grouped[s.date] = []; grouped[s.date].push(s); });
+            if(period === 'today') { filtered = sales.filter(s => s.date === today); } 
+            else if (period === 'yesterday') {
+                const y = new Date(); y.setDate(y.getDate() - 1); if (new Date().getHours() < 4) y.setDate(y.getDate() - 1);
+                const offset = y.getTimezoneOffset(); const localY = new Date(y.getTime() - (offset*60*1000));
+                filtered = sales.filter(s => s.date === localY.toISOString().split('T')[0]);
+            } 
+            else if (period === 'week') {
+                const d = new Date(); d.setDate(d.getDate() - 7);
+                filtered = sales.filter(s => s.date >= d.toISOString().split('T')[0]);
+            } 
+            else if (period === 'month') {
+                filtered = sales.filter(s => s.date.startsWith(today.substring(0, 7)));
+            }
+            
+            // Sort by descending ID (newest first)
+            filtered.sort((a,b) => { 
+                if (a.date !== b.date) return new Date(b.date) - new Date(a.date); 
+                return b.id.localeCompare(a.id); 
+            });
+            
+            const tot = filtered.reduce((a,b) => a+b.total, 0);
+            document.getElementById('salesFilterTotal').textContent = `Rs ${tot.toLocaleString()}`;
+            
+            const list = document.getElementById('salesOnlyList');
+            list.innerHTML = '';
+            
+            const grouped = {};
+            filtered.forEach(s => { if(!grouped[s.date]) grouped[s.date] = []; grouped[s.date].push(s); });
+            
             for(const date in grouped) {
                 list.innerHTML += `<div class="date-header">${date}</div>`;
-                grouped[date].forEach(s => { list.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">Daily Sale</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details}</div></div><div class="tx-right"><div class="tx-amount positive">Rs ${s.total.toLocaleString()}</div><button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div></div>`; });
+                grouped[date].forEach(s => {
+                    list.innerHTML += `<div class="tx-card">
+                        <div class="tx-left"><div class="tx-title">Daily Sale</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details}</div></div>
+                        <div class="tx-right"><div class="tx-amount positive">Rs ${s.total.toLocaleString()}</div>
+                        <button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div>
+                    </div>`;
+                });
             }
         }
 
         function renderGroupedFeed() {
-            const feed = document.getElementById('activityFeed'); feed.innerHTML = '';
+            const feed = document.getElementById('activityFeed');
+            feed.innerHTML = '';
             let combined = [...sales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...expenses.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
-            combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             
-            if (currentFilter !== 'All') { if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale); else combined = combined.filter(i => !i.isSale && i.category === currentFilter); }
-            const grouped = {}; combined.forEach(item => { if(!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
+            combined.sort((a, b) => { 
+                if (a.date !== b.date) return new Date(b.date) - new Date(a.date); 
+                return b.id.localeCompare(a.id); 
+            });
+
+            if (currentFilter !== 'All') {
+                if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale);
+                else combined = combined.filter(i => !i.isSale && i.category === currentFilter);
+            }
+
+            const grouped = {};
+            combined.forEach(item => { if(!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
+
             for(const date in grouped) {
                 feed.innerHTML += `<div class="date-header">${date}</div>`;
                 grouped[date].forEach(item => {
                     const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Till');
-                    feed.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-sub"><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div></div><div class="tx-right"><div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${item.displayAmount.toLocaleString()}</div><div class="tx-actions"><button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button><button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button></div></div></div>`;
+                    feed.innerHTML += `<div class="tx-card">
+                        <div class="tx-left">
+                            <div class="tx-title">${item.details}</div>
+                            <div class="tx-sub"><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div>
+                        </div>
+                        <div class="tx-right">
+                            <div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${item.displayAmount.toLocaleString()}</div>
+                            <div class="tx-actions">
+                                <button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button>
+                                <button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button>
+                            </div>
+                        </div>
+                    </div>`;
                 });
             }
         }
 
         // ==========================================
-        // 5. SHIFT END CALCULATOR
+        // FEATURE: DAILY REPORT & SHIFT CLOSER
         // ==========================================
+        function generateDailyReport() {
+            const targetDate = document.getElementById('dailyReportDate').value;
+            const dSales = sales.filter(s => s.date === targetDate);
+            const dExps = expenses.filter(e => e.date === targetDate);
+
+            const ts = dSales.reduce((a, b) => a + b.total, 0);
+            const te = dExps.reduce((a, b) => a + b.amount, 0);
+            
+            let todayCashIn = 0;
+            dSales.forEach(s => {
+                const cMatch = s.details.match(/Cash:\s*(\d+(\.\d+)?)/);
+                todayCashIn += cMatch ? parseFloat(cMatch[1]) : (s.details==="Imported Data"? s.total : 0);
+            });
+            
+            let todayCashOut = 0;
+            dExps.forEach(e => {
+                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card') {
+                    todayCashOut += e.amount;
+                }
+            });
+
+            const drawerBalance = todayCashIn - todayCashOut;
+
+            document.getElementById('drSales').textContent = `Rs ${ts.toLocaleString()}`;
+            document.getElementById('drExpenses').textContent = `Rs ${te.toLocaleString()}`;
+            const drCash = document.getElementById('drCashDrawer');
+            drCash.textContent = `Rs ${drawerBalance.toLocaleString()}`;
+            drCash.style.color = drawerBalance >= 0 ? "var(--green)" : "var(--red)";
+
+            const list = document.getElementById('drFeedList');
+            list.innerHTML = '';
+            let combined = [...dSales.map(s => ({ ...s, d: s.total, is: true })), ...dExps.map(e => ({ ...e, d: e.amount, is: false }))];
+            if(combined.length === 0) list.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No logs for this date.</p>`;
+            
+            combined.forEach(item => {
+                list.innerHTML += `<div class="tx-card" style="padding:10px;">
+                    <div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-badge" style="width:fit-content">${item.category || (item.is ? 'Sale':'Exp')}</div></div>
+                    <div class="tx-right"><div class="tx-amount ${item.is ? 'positive' : 'negative'}">${item.is ? '+' : '-'} Rs ${item.d.toLocaleString()}</div></div>
+                </div>`;
+            });
+        }
+
         function calcDenom() {
             let t = 0;
             t += (parseInt(document.getElementById('n5000').value)||0)*5000; t += (parseInt(document.getElementById('n1000').value)||0)*1000;
@@ -705,24 +853,25 @@
             if(taken > 0) {
                 const dest = document.getElementById('denomDest').value;
                 const t = { id: generateID(), date: getBusinessDate(), direction: dest === 'Bank' ? 'TillToBank' : 'TillToHand', amount: taken };
-                transfers.push(t);
+                dbTransfers.child(t.id).set(t);
             }
+            
             const bankConf = document.getElementById('shiftBankConfirm').value;
-            if(bankConf) {
-                const bVal = parseFloat(bankConf);
-                const currentBank = getBalances().bank;
-                const diff = bVal - currentBank;
-                if(diff !== 0) transfers.push({ id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Bank', amount: diff });
-            }
-            syncToCloud();
+            if(bankConf) adjustHolding('Bank', parseFloat(bankConf));
             
             showToast("Shift Closed! Downloading Backup...");
-            document.querySelectorAll('.denom-row input').forEach(i => i.value=''); document.getElementById('denomTaken').value=''; document.getElementById('shiftBankConfirm').value=''; document.getElementById('shiftCardConfirm').value=''; calcDenom();
-            document.getElementById('exportRange').value = 'all'; generateReport('csv');
+            document.querySelectorAll('.denom-row input').forEach(i => i.value=''); 
+            document.getElementById('denomTaken').value=''; 
+            document.getElementById('shiftBankConfirm').value=''; 
+            document.getElementById('shiftCardConfirm').value=''; 
+            calcDenom();
+            
+            document.getElementById('exportRange').value = 'all'; 
+            generateReport('csv');
         }
 
         // ==========================================
-        // 6. SALARY VAULT & TRANSFERS
+        // FEATURE: SALARY VAULT
         // ==========================================
         function renderSalaryVault() {
             const vaultBal = getBalances().vault;
@@ -731,96 +880,170 @@
             const empUI = document.getElementById('employeeProgressBars');
             empUI.innerHTML = `<h3 style="color:var(--yellow); margin-bottom:15px;">Vault Progress vs 85k Salary Goal</h3>`;
             const overallPct = Math.min((vaultBal / TOTAL_SALARY_GOAL) * 100, 100);
-            empUI.innerHTML += `<div class="progress-wrapper"><div class="progress-header"><span>Overall Salary Pool</span><span>Rs ${vaultBal.toLocaleString()} / 85k</span></div><div class="progress-bar-bg" style="height:16px;"><div class="progress-fill ${overallPct===100?'full':''}" style="width: ${overallPct}%;"></div></div></div><hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">`;
             
-            const currentMonth = getBusinessDate().substring(0, 7); const monthPayouts = salaryPayouts.filter(p => p.date.startsWith(currentMonth));
+            empUI.innerHTML += `
+                <div class="progress-wrapper">
+                    <div class="progress-header"><span>Overall Salary Pool</span><span>Rs ${vaultBal.toLocaleString()} / 85k</span></div>
+                    <div class="progress-bar-bg" style="height:16px;"><div class="progress-fill ${overallPct===100?'full':''}" style="width: ${overallPct}%;"></div></div>
+                </div><hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">`;
+            
+            const currentMonth = getBusinessDate().substring(0, 7); 
+            const monthPayouts = salaryPayouts.filter(p => p.date.startsWith(currentMonth));
+            
             for(const [emp, target] of Object.entries(salaryTargets)) {
-                const paid = monthPayouts.filter(p => p.employee === emp).reduce((a,b) => a+b.amount, 0); const pct = Math.min((paid / target) * 100, 100);
-                empUI.innerHTML += `<div class="progress-wrapper"><div class="progress-header"><span>${emp} Paid</span><span>Rs ${paid.toLocaleString()} / ${target.toLocaleString()}</span></div><div class="progress-bar-bg"><div class="progress-fill ${pct===100?'full':''}" style="width: ${pct}%;"></div></div></div>`;
+                const paid = monthPayouts.filter(p => p.employee === emp).reduce((a,b) => a+b.amount, 0); 
+                const pct = Math.min((paid / target) * 100, 100);
+                empUI.innerHTML += `
+                    <div class="progress-wrapper">
+                        <div class="progress-header"><span>${emp} Paid</span><span>Rs ${paid.toLocaleString()} / ${target.toLocaleString()}</span></div>
+                        <div class="progress-bar-bg"><div class="progress-fill ${pct===100?'full':''}" style="width: ${pct}%;"></div></div>
+                    </div>`;
             }
 
-            const feed = document.getElementById('vaultFeed'); feed.innerHTML = '';
-            let combined = [...expenses.filter(e => e.category === 'Salaries & Wages').map(e => ({...e, type: 'IN'})), ...salaryPayouts.map(p => ({...p, type: 'OUT'}))];
-            combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
+            const feed = document.getElementById('vaultFeed');
+            feed.innerHTML = '';
+            
+            let combined = [
+                ...expenses.filter(e => e.category === 'Salaries & Wages').map(e => ({...e, type: 'IN'})),
+                ...salaryPayouts.map(p => ({...p, type: 'OUT'}))
+            ];
+            
+            combined.sort((a, b) => { 
+                if (a.date !== b.date) return new Date(b.date) - new Date(a.date); 
+                return b.id.localeCompare(a.id); 
+            });
+
             combined.forEach(item => {
-                const isOut = item.type === 'OUT'; const sub = isOut ? `Paid to: ${item.employee} (${item.paymentMethod})` : `Added from ${item.paymentMethod || 'Till'}`;
-                feed.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-sub"><span>${item.date}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${sub}</span></div></div><div class="tx-right"><div class="tx-amount ${isOut ? 'negative' : 'positive'}">${isOut ? '-' : '+'} Rs ${item.amount.toLocaleString()}</div>${isOut ? `<button class="btn-icon" style="color:var(--red); margin-top:5px;" onclick="deletePayout('${item.id}')">Del</button>` : ''}</div></div>`;
+                const isOut = item.type === 'OUT';
+                const sub = isOut ? `Paid to: ${item.employee} (${item.paymentMethod})` : `Added from ${item.paymentMethod || 'Till'}`;
+                feed.innerHTML += `<div class="tx-card">
+                    <div class="tx-left">
+                        <div class="tx-title">${item.details}</div>
+                        <div class="tx-sub"><span>${item.date}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${sub}</span></div>
+                    </div>
+                    <div class="tx-right">
+                        <div class="tx-amount ${isOut ? 'negative' : 'positive'}">${isOut ? '-' : '+'} Rs ${item.amount.toLocaleString()}</div>
+                        ${isOut ? `<button class="btn-icon" style="color:var(--red); margin-top:5px;" onclick="deletePayout('${item.id}')">Del</button>` : ''}
+                    </div>
+                </div>`;
             });
         }
 
         function handleFundVault(e) {
             e.preventDefault();
             const exp = { id: generateID(), date: getBusinessDate(), type: 'Expense', category: 'Salaries & Wages', paymentMethod: document.getElementById('vaultFundSource').value, details: 'Manual Vault Funding', amount: parseFloat(document.getElementById('vaultFundAmt').value) };
-            expenses.push(exp); syncToCloud(); e.target.reset(); showToast("Vault Funded!");
+            dbExpenses.child(exp.id).set(exp);
+            e.target.reset(); showToast("Vault Funded!");
         }
 
         function handlePayoutSubmit(e) {
             e.preventDefault();
             const p = { id: generateID(), date: document.getElementById('payoutDate').value, employee: document.getElementById('payoutEmployee').value, paymentMethod: document.getElementById('payoutMethod').value, details: `Vault Payout`, amount: parseFloat(document.getElementById('payoutAmount').value) };
-            salaryPayouts.push(p); syncToCloud(); e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate(); showToast("Payout Processed!");
+            dbPayouts.child(p.id).set(p);
+            e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate();
+            showToast("Payout Processed!");
         }
 
-        function handleTransfer(e) { e.preventDefault(); const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) }; transfers.push(t); syncToCloud(); e.target.reset(); showToast("Transfer Saved!"); }
+        function deletePayout(id) { if(confirm("Delete this salary payout?")) dbPayouts.child(id).remove(); }
+
+        // ==========================================
+        // FEATURE: TRANSFERS & BALANCES
+        // ==========================================
+        function handleTransfer(e) {
+            e.preventDefault();
+            const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) };
+            dbTransfers.child(t.id).set(t);
+            e.target.reset(); showToast("Transfer Saved!");
+        }
 
         function adjustHolding(account) {
-            const input = document.getElementById(`adj${account}Amt`);
-            const target = parseFloat(input.value);
-            if(isNaN(target)) return;
-            const current = getBalances()[account.toLowerCase()]; const diff = target - current;
+            const input = document.getElementById(account === 'Cash' ? 'adjCashAmt' : 'adjBankAmt').value; // fallback mapped to previous inputs
+            const explicitInput = document.getElementById(`adj${account}Amt`);
+            const targetStr = explicitInput ? explicitInput.value : input;
+            
+            if(!targetStr) return;
+            const target = parseFloat(targetStr);
+            const current = getBalances()[account.toLowerCase()];
+            const diff = target - current;
+            
             if(diff === 0) return showToast("Already accurate!");
-            const adj = { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: account, amount: diff };
-            transfers.push(adj); syncToCloud();
-            if(input) input.value = ''; showToast(`${account} fixed to Rs ${target}`);
+            
+            const adj = { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: account, amount: target };
+            dbTransfers.child(adj.id).set(adj);
+            
+            if(explicitInput) explicitInput.value = '';
+            showToast(`${account} forcefully set to Rs ${target}`);
         }
 
         // ==========================================
-        // 7. UI FORMS
+        // UI INTERACTIONS & FORMS
         // ==========================================
         function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active')); document.getElementById(`view-${tabId}`).classList.add('active');
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`view-${tabId}`).classList.add('active');
+            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const btnMap = {'dashboard': 0, 'sales': 1, 'add': 2, 'daily-report': 3, 'activity': 4}; // mapped directly to layout
+            const btnMap = {'dashboard': 0, 'sales': 1, 'add': 2, 'daily-report': 3, 'activity': 4};
             if(btnMap[tabId] !== undefined) document.querySelectorAll('.bottom-nav .nav-item')[btnMap[tabId]].classList.add('active');
             window.scrollTo(0,0);
         }
 
         function switchAddType(type) {
-            const isSale = type === 'Sale'; document.getElementById('btnTypeSale').classList.toggle('active', isSale); document.getElementById('btnTypeExpense').classList.toggle('active', !isSale);
-            document.getElementById('saleForm').style.display = isSale ? 'block' : 'none'; document.getElementById('expenseForm').style.display = isSale ? 'none' : 'block';
+            const isSale = type === 'Sale';
+            document.getElementById('btnTypeSale').classList.toggle('active', isSale);
+            document.getElementById('btnTypeExpense').classList.toggle('active', !isSale);
+            document.getElementById('saleForm').style.display = isSale ? 'block' : 'none';
+            document.getElementById('expenseForm').style.display = isSale ? 'none' : 'block';
         }
 
-        function setFilter(cat, chip) { currentFilter = cat; document.querySelectorAll('#filterPills .chip').forEach(c => c.classList.remove('active')); chip.classList.add('active'); renderGroupedFeed(); }
+        function setFilter(cat, chip) {
+            currentFilter = cat;
+            document.querySelectorAll('#filterPills .chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active'); renderFeed();
+        }
 
         function handleSaleSubmit(e) {
-            e.preventDefault(); const till = parseFloat(document.getElementById('addSaleTill').value) || 0; const hand = parseFloat(document.getElementById('addSaleHand').value) || 0; const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
-            if (till + hand + online === 0) return alert('Enter an amount');
+            e.preventDefault();
+            const till = parseFloat(document.getElementById('addSaleTill').value) || 0;
+            const hand = parseFloat(document.getElementById('addSaleHand').value) || 0;
+            const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
+            if (till + hand + online === 0) return alert('Enter at least one sale amount');
+            
             const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Till: ${till} | Hand: ${hand} | Online: ${online}`, total: till + hand + online };
-            sales.push(sale); syncToCloud(); e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); showToast("Sale Logged!"); switchTab('dashboard');
+            dbSales.child(sale.id).set(sale);
+            e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); 
+            showToast("Sale Logged!"); switchTab('dashboard');
         }
 
         function handleExpenseSubmit(e) {
-            e.preventDefault(); const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
-            expenses.push(exp); syncToCloud(); e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); showToast("Expense Logged!"); switchTab('dashboard');
+            e.preventDefault();
+            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
+            dbExpenses.child(exp.id).set(exp);
+            e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); 
+            showToast("Expense Logged!"); switchTab('dashboard');
         }
 
         function quickAddSalary() {
             const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Bank', details: 'Daily Salary Reserve', amount: 4000 };
-            expenses.push(exp); syncToCloud(); showToast("Vault Funded from Bank!"); switchTab('salary-vault');
+            dbExpenses.child(exp.id).set(exp); showToast("Vault Funded from Bank!"); switchTab('salary-vault');
         }
 
-        function deleteEntry(id, type) { 
-            if (!confirm('Delete permanently?')) return; 
-            if (type === 'Sale') sales = sales.filter(s => s.id !== id); else expenses = expenses.filter(e => e.id !== id); 
-            syncToCloud(); 
-        }
-        function deletePayout(id) { 
-            if(confirm("Delete this payout?")) { salaryPayouts = salaryPayouts.filter(p => p.id !== id); syncToCloud(); } 
+        function deleteEntry(id, type) {
+            if (!confirm('Delete this entry permanently?')) return;
+            if (type === 'Sale') dbSales.child(id).remove(); else dbExpenses.child(id).remove();
         }
 
         function openEditModal(id, type) {
-            const isSale = type === 'Sale'; const item = isSale ? sales.find(s => s.id === id) : expenses.find(e => e.id === id); if (!item) return;
-            document.getElementById('editId').value = item.id; document.getElementById('editType').value = type; document.getElementById('editDate').value = item.date; document.getElementById('editDetails').value = item.details; document.getElementById('editAmount').value = isSale ? item.total : item.amount;
-            document.getElementById('editCategoryGroup').style.display = isSale ? 'none' : 'block'; document.getElementById('editMethodGroup').style.display = isSale ? 'none' : 'block';
+            const isSale = type === 'Sale';
+            const item = isSale ? sales.find(s => s.id === id) : expenses.find(e => e.id === id);
+            if (!item) return;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('editType').value = type;
+            document.getElementById('editDate').value = item.date;
+            document.getElementById('editDetails').value = item.details;
+            document.getElementById('editAmount').value = isSale ? item.total : item.amount;
+            document.getElementById('editCategoryGroup').style.display = isSale ? 'none' : 'block';
+            document.getElementById('editMethodGroup').style.display = isSale ? 'none' : 'block';
             if(!isSale) { document.getElementById('editCategory').value = item.category; document.getElementById('editExpMethod').value = item.paymentMethod || 'Till'; }
             document.getElementById('editModal').classList.add('open');
         }
@@ -828,29 +1051,54 @@
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('open'); }
 
         function saveEdit() {
-            const id = document.getElementById('editId').value; const type = document.getElementById('editType').value;
-            if (type === 'Sale') { const idx = sales.findIndex(s => s.id === id); if(idx !== -1) { sales[idx].date = document.getElementById('editDate').value; sales[idx].details = document.getElementById('editDetails').value; sales[idx].total = parseFloat(document.getElementById('editAmount').value); } } 
-            else { const idx = expenses.findIndex(e => e.id === id); if(idx !== -1) { expenses[idx].date = document.getElementById('editDate').value; expenses[idx].category = document.getElementById('editCategory').value; expenses[idx].paymentMethod = document.getElementById('editExpMethod').value; expenses[idx].details = document.getElementById('editDetails').value; expenses[idx].amount = parseFloat(document.getElementById('editAmount').value); } }
-            syncToCloud(); showToast("Saved!"); closeModal('editModal');
+            const id = document.getElementById('editId').value;
+            const type = document.getElementById('editType').value;
+            if (type === 'Sale') {
+                const item = sales.find(s => s.id === id);
+                if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); dbSales.child(id).set(item); }
+            } else {
+                const item = expenses.find(e => e.id === id);
+                if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); dbExpenses.child(id).set(item); }
+            }
+            showToast("Saved!"); closeModal('editModal');
         }
 
         // ==========================================
-        // 8. EXPORT SYSTEM
+        // 6. EXPORT SYSTEM (PDF & CSV)
         // ==========================================
         function toggleExportDates() { document.getElementById('exportCustomFields').style.display = document.getElementById('exportRange').value === 'custom' ? 'block' : 'none'; }
+
         function generateReport(format) {
-            const range = document.getElementById('exportRange').value; let fSales = sales; let fExp = expenses; let dateText = "Lifetime Data";
-            if(range === 'month') { const currentMonth = getBusinessDate().substring(0, 7); fSales = sales.filter(s => s.date.startsWith(currentMonth)); fExp = expenses.filter(e => e.date.startsWith(currentMonth)); dateText = `Month: ${currentMonth}`; } 
-            else if (range === 'custom') { const start = document.getElementById('exportStart').value; const end = document.getElementById('exportEnd').value; if(!start || !end) return alert("Select dates."); fSales = sales.filter(s => s.date >= start && s.date <= end); fExp = expenses.filter(e => e.date >= start && e.date <= end); dateText = `From ${start} to ${end}`; }
-            const tSales = fSales.reduce((a, b) => a + b.total, 0); const tExp = fExp.reduce((a, b) => a + b.amount, 0);
-            let combined = [...fSales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...fExp.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))]; combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
+            const range = document.getElementById('exportRange').value;
+            let fSales = sales; let fExp = expenses; let dateText = "Lifetime Data";
+
+            if(range === 'month') {
+                const now = new Date(); const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                fSales = sales.filter(s => s.date.startsWith(currentMonth)); fExp = expenses.filter(e => e.date.startsWith(currentMonth)); dateText = `Month: ${currentMonth}`;
+            } else if (range === 'custom') {
+                const start = document.getElementById('exportStart').value; const end = document.getElementById('exportEnd').value;
+                if(!start || !end) return alert("Please select start and end dates.");
+                fSales = sales.filter(s => s.date >= start && s.date <= end); fExp = expenses.filter(e => e.date >= start && e.date <= end); dateText = `From ${start} to ${end}`;
+            }
+
+            const tSales = fSales.reduce((sum, s) => sum + s.total, 0); const tExp = fExp.reduce((sum, e) => sum + e.amount, 0);
+            let combined = [...fSales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...fExp.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
+            combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
+
             if(format === 'csv') exportToCSV(combined, tSales, tExp, dateText); else exportToPDF(combined, tSales, tExp, dateText);
         }
+
         function exportToCSV(data, tSales, tExp, dateText) {
-            let csvContent = "data:text/csv;charset=utf-8,DAILY SUMMARY REPORT," + dateText + "\nTotal Sales (Rs),Total Expenses (Rs),Net Profit (Rs)\n" + tSales + "," + tExp + "," + (tSales - tExp) + "\n\nDETAILED TRANSACTIONS\nDate,Type,Category,Payment Method,Description,Amount (Rs)\n";
-            data.forEach(item => { const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod || "Till"); csvContent += `"${item.date}","${type}","${cat}","${pm}","${item.details.replace(/"/g, '""')}","${item.displayAmount}"\n`; });
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += `DAILY SUMMARY REPORT,${dateText}\nTotal Sales (Rs),Total Expenses (Rs),Net Profit / Savings (Rs)\n${tSales},${tExp},${tSales - tExp}\n\n`;
+            csvContent += "DETAILED TRANSACTIONS\nDate,Type,Category,Payment Method,Description,Amount (Rs)\n";
+            data.forEach(item => {
+                const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod || "Till");
+                csvContent += `"${item.date}","${type}","${cat}","${pm}","${item.details.replace(/"/g, '""')}","${item.displayAmount}"\n`;
+            });
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Stackd_${dateText.replace(/ /g, "_")}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); showToast("Excel Downloaded!");
         }
+
         function exportToPDF(data, tSales, tExp, dateText) {
             document.getElementById('pdfDateRangeText').textContent = dateText; document.getElementById('pdfTotalSales').textContent = `Rs ${tSales.toLocaleString()}`; document.getElementById('pdfTotalExp').textContent = `Rs ${tExp.toLocaleString()}`; document.getElementById('pdfNetProfit').textContent = `Rs ${(tSales - tExp).toLocaleString()}`;
             const tbody = document.getElementById('pdfTableBody'); tbody.innerHTML = '';
