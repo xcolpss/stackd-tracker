@@ -170,7 +170,7 @@
                 </div>
                 <div class="stats-split" style="padding-top:0; border:none;">
                     <div class="stat-box"><div class="sub-label">Salary Vault</div><div class="sub-value" style="color:var(--purple);" id="dashVault">Rs 0</div></div>
-                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
+                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net P&L (Total Liquid)</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
                 </div>
             </div>
             <div class="section-title">Where Your Money Goes</div>
@@ -658,10 +658,10 @@
         // 3. UI RENDERING
         // ==========================================
         function renderDashboard() {
-            const totalS = (sales||[]).reduce((sum, s) => sum + (s.total||0), 0);
-            const totalE = (expenses||[]).reduce((sum, e) => sum + (e.amount||0), 0);
-            const profit = totalS - totalE;
             const bals = getBalances();
+            
+            // MATH CORRECTION: Net P&L now exclusively calculates physical/liquid cash on hand based on your request.
+            const profit = bals.till + bals.hand + bals.bank; 
 
             if(document.getElementById('dashTill')) document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`;
             if(document.getElementById('dashHand')) document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
@@ -671,7 +671,6 @@
             if(document.getElementById('balHand')) document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
             if(document.getElementById('balBank')) document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
 
-            if(document.getElementById('dashTotalSales')) document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`;
             if(document.getElementById('dashVault')) document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
             
             const np = document.getElementById('dashNetProfit');
