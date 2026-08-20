@@ -14,27 +14,17 @@
 
     <style>
         :root {
-            --bg: #0d0d0f;
-            --surface: #17171c;
-            --surface-subtle: #22222a;
-            --border: #2c2c36;
-            --text: #f4f4f6;
-            --text-muted: #8e8e9a;
-            --yellow: #facc15;
-            --yellow-hover: #eab308;
-            --green: #22c55e;
-            --red: #ef4444;
-            --purple: #a855f7;
-            --blue: #38bdf8;
-            --radius: 16px;
-            --radius-sm: 10px;
+            --bg: #0d0d0f; --surface: #17171c; --surface-subtle: #22222a; --border: #2c2c36;
+            --text: #f4f4f6; --text-muted: #8e8e9a; --yellow: #facc15; --yellow-hover: #eab308;
+            --green: #22c55e; --red: #ef4444; --purple: #a855f7; --blue: #38bdf8;
+            --radius: 16px; --radius-sm: 10px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: 90px; min-height: 100vh; color-scheme: dark; overflow-x: hidden; }
 
         /* Header & Hamburger */
-        header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+        header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-size: 1.25rem; font-weight: 900; letter-spacing: 2px; color: var(--yellow); display: flex; align-items: center; gap: 10px; }
         .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); }
@@ -43,7 +33,7 @@
         /* Sidebar Menu */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
-        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto;}
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .sidebar-header h2 { color: var(--yellow); letter-spacing: 1px; font-weight: 900; }
@@ -57,12 +47,11 @@
 
         /* Cards & Typography */
         .hero-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
-        .hero-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; }
-        .hero-card .main-stat { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 16px; }
         .stats-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-top: 14px; border-top: 1px solid var(--border); }
         .stat-box .sub-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
         .stat-box .sub-value { font-size: 1.1rem; font-weight: 700; }
         .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 4px 12px; }
+        .date-header { background: var(--surface-subtle); color: var(--yellow); padding: 6px 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; margin: 15px 0 8px 0; display: block; border: 1px solid var(--border); text-align: center; letter-spacing: 1px;}
 
         /* Lists & Transactions */
         .category-list, .feed-list { display: flex; flex-direction: column; gap: 8px; }
@@ -96,29 +85,36 @@
         input, select { width: 100%; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 1rem; color: var(--text); outline: none; font-family: inherit; }
         input:focus, select:focus { border-color: var(--yellow); }
         .btn-submit { width: 100%; background: var(--yellow); color: #000; border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        .btn-submit:active { transform: scale(0.98); }
         .btn-quick-salary { width: 100%; background: transparent; border: 1px dashed var(--purple); color: var(--purple); border-radius: var(--radius-sm); padding: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 12px; }
+
+        .progress-wrapper { margin-bottom: 15px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+        .progress-bar-bg { width: 100%; height: 12px; background: var(--surface-subtle); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+        .progress-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.3s ease; }
+        .progress-fill.full { background: var(--green); }
+        .denom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .denom-row { display: flex; align-items: center; gap: 10px; background: var(--surface-subtle); padding: 5px 10px; border-radius: 8px; }
+        .denom-row span { font-weight: bold; width: 40px; color: var(--yellow); }
+        .denom-row input { padding: 8px; margin: 0; text-align: center; }
 
         /* Export & Vault specific */
         .export-btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .btn-pdf { flex: 1; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-csv { flex: 1; background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
+        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
         .vault-pill h3 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
-        .vault-pill h1 { font-size: 2.2rem; margin: 0; }
+        .vault-pill h1 { font-size: 2.5rem; margin: 0; }
 
         /* Bottom Nav */
-        nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); z-index: 40; }
+        nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); z-index: 40; }
         .nav-item { background: none; border: none; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--yellow); }
         .nav-icon { font-size: 1.3rem; }
         .nav-add-btn { background: var(--yellow); color: #000; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; border: none; cursor: pointer; margin-top: -18px; box-shadow: 0 4px 12px rgba(250, 204, 21, 0.35); transition: 0.2s;}
-        .nav-add-btn:active { transform: scale(0.9); }
-
-        /* Modals & Toasts */
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); z-index: 200; align-items: flex-end; justify-content: center; }
         .modal.open { display: flex; }
-        .modal-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; padding: 20px 20px max(24px, env(safe-area-inset-bottom)); }
+        .modal-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; padding: 20px 20px max(24px, env(safe-area-inset-bottom)); max-height: 90vh; overflow-y:auto;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; }
         
@@ -130,17 +126,15 @@
 </head>
 <body>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast">Saved Successfully!</div>
 
-    <!-- Sidebar Menu Overlay & Drawer -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>MENU</h2></div>
         <a class="menu-link" onclick="switchTab('dashboard'); toggleMenu();">📊 Dashboard</a>
         <a class="menu-link" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active').click(); toggleMenu();">📈 Dedicated Sales Log</a>
-        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions</a>
-        <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Daily Shift Report</a>
+        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions Feed</a>
+        <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Shift & Cash Closer</a>
         <a class="menu-link" onclick="switchTab('balances'); toggleMenu();">🏦 Accounts & Transfers</a>
         <a class="menu-link" onclick="switchTab('salary-vault'); toggleMenu();">💰 Salary Vault</a>
         <a class="menu-link" onclick="switchTab('export'); toggleMenu();">⬇️ Export to Excel/PDF</a>
@@ -160,26 +154,30 @@
         <!-- 1. DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-section active">
             <div class="hero-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:15px;">
-                    <div>
-                        <div class="sub-label">CASH IN HAND/TILL</div>
-                        <div class="main-stat" style="color:var(--green); font-size:1.6rem;" id="dashCash">Rs 0</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:15px; text-align:center;">
+                    <div style="flex:1; border-right:1px solid var(--border);">
+                        <div class="sub-label">CASH IN TILL</div>
+                        <div class="main-stat" style="color:var(--green); font-size:1.3rem; margin-bottom:0;" id="dashTill">Rs 0</div>
                     </div>
-                    <div style="text-align:right;">
+                    <div style="flex:1; border-right:1px solid var(--border);">
+                        <div class="sub-label">CASH IN HAND</div>
+                        <div class="main-stat" style="color:var(--green); font-size:1.3rem; margin-bottom:0;" id="dashHand">Rs 0</div>
+                    </div>
+                    <div style="flex:1;">
                         <div class="sub-label">BANK / ONLINE</div>
-                        <div class="main-stat" style="color:var(--blue); font-size:1.6rem;" id="dashBank">Rs 0</div>
+                        <div class="main-stat" style="color:var(--blue); font-size:1.3rem; margin-bottom:0;" id="dashBank">Rs 0</div>
                     </div>
                 </div>
                 <div class="stats-split" style="padding-top:0; border:none;">
-                    <div class="stat-box"><div class="sub-label">Lifetime Sales</div><div class="sub-value" id="dashTotalSales">Rs 0</div></div>
-                    <div class="stat-box"><div class="sub-label">Net Profit / P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
+                    <div class="stat-box"><div class="sub-label">Salary Vault</div><div class="sub-value" style="color:var(--purple);" id="dashVault">Rs 0</div></div>
+                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
                 </div>
             </div>
             <div class="section-title">Where Your Money Goes</div>
             <div class="category-list" id="categoryBreakdownList"></div>
         </section>
 
-        <!-- 2. SALES LEDGER VIEW (NEW) -->
+        <!-- 2. SALES LEDGER VIEW -->
         <section id="view-sales" class="view-section">
             <div class="form-card" style="padding:15px;">
                 <h3 style="color:var(--yellow); margin-bottom:15px; text-transform:uppercase;">Sales Log</h3>
@@ -201,13 +199,14 @@
             </div>
         </section>
 
-        <!-- 3. BALANCES & TRANSFERS VIEW (NEW) -->
+        <!-- 3. BALANCES & TRANSFERS VIEW -->
         <section id="view-balances" class="view-section">
             <div class="hero-card" style="text-align:center;">
                 <h3 style="color:var(--yellow); margin-bottom:20px; text-transform:uppercase;">Current Accounts</h3>
                 <div class="stats-split" style="border:none; padding:0;">
-                    <div><div class="sub-label">CASH IN HAND/TILL</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balCash">Rs 0</div></div>
-                    <div><div class="sub-label">BANK / ONLINE</div><div class="sub-value" style="color:var(--blue); font-size:1.5rem;" id="balBank">Rs 0</div></div>
+                    <div><div class="sub-label">TILL CASH</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balTill">Rs 0</div></div>
+                    <div><div class="sub-label">HAND CASH</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balHand">Rs 0</div></div>
+                    <div><div class="sub-label">BANK ONLINE</div><div class="sub-value" style="color:var(--blue); font-size:1.5rem;" id="balBank">Rs 0</div></div>
                 </div>
             </div>
 
@@ -217,8 +216,11 @@
                     <div class="form-group">
                         <label>Direction</label>
                         <select id="transferDir" required>
-                            <option value="CashToBank">Cash ➡️ Bank (Deposit)</option>
-                            <option value="BankToCash">Bank ➡️ Cash (Withdrawal)</option>
+                            <option value="TillToHand">Till ➡️ Hand</option>
+                            <option value="TillToBank">Till ➡️ Bank/Online</option>
+                            <option value="HandToBank">Hand ➡️ Bank/Online</option>
+                            <option value="BankToHand">Bank/Online ➡️ Hand (Withdrawal)</option>
+                            <option value="BankToTill">Bank/Online ➡️ Till</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Amount (Rs)</label><input type="number" id="transferAmt" required min="1" inputmode="decimal"></div>
@@ -228,22 +230,11 @@
 
             <div class="form-card" style="border-color:var(--red);">
                 <h3 style="margin-bottom:15px; color:var(--red);">Fix / Adjust Balances</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">If the app's math is off due to unrecorded transactions, enter your exact actual balance below to correct it. This doesn't mess up your profit/loss records.</p>
-                
-                <div class="form-group">
-                    <label>Set Exact Bank Balance (Rs)</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="adjBankAmt" inputmode="decimal" placeholder="e.g. 8199">
-                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Set Exact Cash Balance (Rs)</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="adjCashAmt" inputmode="decimal" placeholder="Actual Cash">
-                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Cash')">Set</button>
-                    </div>
-                </div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Enter your exact actual balance below to lock it in. This overrides the math instantly without messing up your profit/loss records.</p>
+                <div class="form-group"><label>Set Exact Till Balance (Rs)</label><div style="display:flex; gap:10px;"><input type="number" id="adjTillAmt" inputmode="decimal" placeholder="e.g. 4120"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button></div></div>
+                <div class="form-group"><label>Set Exact Hand Cash (Rs)</label><div style="display:flex; gap:10px;"><input type="number" id="adjHandAmt" inputmode="decimal" placeholder="e.g. 24000"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button></div></div>
+                <div class="form-group"><label>Set Exact Bank Balance (Rs)</label><div style="display:flex; gap:10px;"><input type="number" id="adjBankAmt" inputmode="decimal" placeholder="e.g. 11000"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button></div></div>
+                <div class="form-group"><label>Set Exact Vault Balance (Rs)</label><div style="display:flex; gap:10px;"><input type="number" id="adjVaultAmt" inputmode="decimal" placeholder="e.g. 44933"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Vault')">Set</button></div></div>
             </div>
         </section>
 
@@ -273,9 +264,9 @@
             <div class="form-card">
                 <form id="saleForm" style="display: none;" onsubmit="handleSaleSubmit(event)">
                     <div class="form-group"><label>Business Date (Auto Shift)</label><input type="date" id="addSaleDate" required></div>
-                    <div class="form-group"><label>Cash (Rs)</label><input type="number" id="addSaleCash" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Card (Rs)</label><input type="number" id="addSaleCard" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Online (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Cash to Till (Rs)</label><input type="number" id="addSaleTill" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Cash to Hand (Rs)</label><input type="number" id="addSaleHand" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Online/Bank (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
                     <button type="submit" class="btn-submit">Log Sale</button>
                 </form>
                 <form id="expenseForm" onsubmit="handleExpenseSubmit(event)">
@@ -297,9 +288,10 @@
                     <div class="form-group">
                         <label>Paid Via</label>
                         <select id="addExpMethod" required>
-                            <option value="Cash">Cash (Drawer / Hand)</option>
-                            <option value="Online">Online Transfer (Bank)</option>
-                            <option value="Card">Bank Card (Bank)</option>
+                            <option value="Till">Cash (Till)</option>
+                            <option value="Hand">Cash (Hand)</option>
+                            <option value="Bank">Online / Bank Account</option>
+                            <option value="Card">Bank Card</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Description</label><input type="text" id="addExpItem" required></div>
@@ -310,49 +302,98 @@
             </div>
         </section>
 
-        <!-- 6. DAILY SHIFT REPORT -->
+        <!-- 6. DAILY SHIFT REPORT & CLOSER -->
         <section id="view-daily-report" class="view-section">
             <div class="form-card">
                 <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Daily Shift Report</h3>
-                <div class="form-group">
-                    <label>Select Shift Date</label>
-                    <input type="date" id="dailyReportDate" onchange="generateDailyReport()">
-                </div>
-                
+                <div class="form-group"><label>Select Shift Date</label><input type="date" id="dailyReportDate" onchange="generateDailyReport()"></div>
                 <div class="stats-split" style="margin-top:20px; border-top:none;">
                     <div class="stat-box"><div class="sub-label">Sales Today</div><div class="sub-value positive" id="drSales">Rs 0</div></div>
                     <div class="stat-box"><div class="sub-label">Expenses Today</div><div class="sub-value negative" id="drExpenses">Rs 0</div></div>
                 </div>
-                
-                <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin-top:20px; text-align:center; border: 1px solid var(--border);">
-                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:5px;">Remaining Cash Drawer Balance</div>
-                    <div style="font-size:2rem; font-weight:800; color:var(--yellow);" id="drCashDrawer">Rs 0</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">(Today's Cash Sales) - (Today's Cash Expenses)</div>
+            </div>
+
+            <div class="form-card" style="border-color:var(--yellow);">
+                <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Shift End & Till Calculator</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Count the notes in the Till at the end of the shift.</p>
+                <div class="denom-grid">
+                    <div class="denom-row"><span>5000</span><input type="number" id="n5000" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>1000</span><input type="number" id="n1000" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>500</span><input type="number" id="n500" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>100</span><input type="number" id="n100" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>50</span><input type="number" id="n50" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>20</span><input type="number" id="n20" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>10</span><input type="number" id="n10" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
                 </div>
                 
-                <div class="section-title" style="margin-left:0;">Detailed Log</div>
-                <div class="feed-list" id="drFeedList"></div>
+                <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin:15px 0; text-align:center;">
+                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Total Counted in Till</div>
+                    <div style="font-size:2rem; font-weight:800; color:var(--green);" id="denomTotal">Rs 0</div>
+                </div>
+                <div class="form-group"><label>Take amount OUT of Till (Rs)</label><input type="number" id="denomTaken" inputmode="decimal" placeholder="0" onkeyup="calcDenom()"></div>
+                <div class="form-group"><label>Where is this money going?</label><select id="denomDest"><option value="Hand">Move to Cash in Hand</option><option value="Bank">Deposit to Bank</option></select></div>
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid var(--border); margin-top:10px;">
+                    <span style="font-weight:bold; color:var(--text-muted);">Amount Left in Till:</span>
+                    <span style="font-weight:bold; color:var(--yellow); font-size:1.2rem;" id="denomLeft">Rs 0</span>
+                </div>
+                <h4 style="margin:20px 0 10px; color:var(--text-muted);">Verify Final Totals</h4>
+                <div class="form-group"><label>Confirm Bank/Online Balance (Rs)</label><input type="number" id="shiftBankConfirm" inputmode="decimal"></div>
+                <div class="form-group"><label>Total Card Sales on POS (Rs)</label><input type="number" id="shiftCardConfirm" inputmode="decimal"></div>
+                <button class="btn-submit" style="background:var(--blue); color:white;" onclick="processShiftEnd()">Close Shift & Save Backup</button>
             </div>
         </section>
 
         <!-- 7. SALARY VAULT -->
         <section id="view-salary-vault" class="view-section">
             <div class="vault-pill">
-                <h3>Total Salary Reserve Available</h3>
+                <h3>Total Salary Reserve (The Vault)</h3>
                 <h1 id="vaultBalance">Rs 0</h1>
             </div>
+            
+            <div class="form-card">
+                <h3 style="color:var(--yellow); margin-bottom:15px;">Fund The Vault</h3>
+                <form onsubmit="handleFundVault(event)">
+                    <div class="form-group"><label>Amount (Rs)</label><input type="number" id="vaultFundAmt" inputmode="decimal" value="4000" required></div>
+                    <div class="form-group">
+                        <label>Take Money From</label>
+                        <select id="vaultFundSource" required>
+                            <option value="Bank">Bank / Online Account</option>
+                            <option value="Hand">Cash in Hand</option>
+                            <option value="Till">Cash in Till</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background:var(--green); color:#000;">+ Move Money to Vault</button>
+                </form>
+            </div>
+
+            <div class="form-card" id="employeeProgressBars"></div>
 
             <div class="form-card">
-                <h3 style="color:var(--yellow); margin-bottom:15px;">Log Salary Payout / Withdrawal</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Use this when you are actually paying staff at the end of the month, or withdrawing from the salary pool for an emergency. This removes money from the Vault.</p>
+                <h3 style="color:var(--red); margin-bottom:15px;">Log Salary Payout (Withdrawal)</h3>
                 <form onsubmit="handlePayoutSubmit(event)">
                     <div class="form-group"><label>Date</label><input type="date" id="payoutDate" required></div>
-                    <div class="form-group"><label>Who/What is this payout for?</label><input type="text" id="payoutDesc" placeholder="e.g. Ali's Month Salary" required></div>
-                    <div class="form-group"><label>Amount Withdrawn (Rs)</label><input type="number" id="payoutAmount" inputmode="decimal" required min="1"></div>
+                    <div class="form-group">
+                        <label>Employee</label>
+                        <select id="payoutEmployee" required>
+                            <option value="Ahmed">Ahmed (20k)</option>
+                            <option value="Amroz">Amroz (25k)</option>
+                            <option value="Kainat">Kainat (20k)</option>
+                            <option value="Muqadas">Muqadas (20k)</option>
+                            <option value="Other">Other / Emergency</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Money Physically Paid From</label>
+                        <select id="payoutMethod" required>
+                            <option value="Bank">Bank / JazzCash</option>
+                            <option value="Hand">Cash in Hand</option>
+                            <option value="Till">Cash in Till</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount Paid (Rs)</label><input type="number" id="payoutAmount" inputmode="decimal" required min="1"></div>
                     <button type="submit" class="btn-submit" style="background:var(--purple); color:white;">Process Payout</button>
                 </form>
             </div>
-            
             <div class="section-title">Vault History</div>
             <div class="feed-list" id="vaultFeed"></div>
         </section>
@@ -373,21 +414,19 @@
                     <div class="form-group"><label>Start Date</label><input type="date" id="exportStart"></div>
                     <div class="form-group"><label>End Date</label><input type="date" id="exportEnd"></div>
                 </div>
-                
                 <div class="export-btn-group">
                     <button class="btn-pdf" onclick="generateReport('pdf')">Download PDF</button>
-                    <button class="btn-csv" onclick="generateReport('csv')">Download Excel (CSV)</button>
+                    <button class="btn-csv" onclick="generateReport('csv')">Download Excel</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <button class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon">📊</span><span>Dash</span></button>
-        <button class="nav-item" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active')?.click();"><span class="nav-icon">📈</span><span>Sales</span></button>
+        <button class="nav-item" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active').click();"><span class="nav-icon">📈</span><span>Sales</span></button>
         <button class="nav-add-btn" onclick="switchTab('add')">+</button>
-        <button class="nav-item" onclick="switchTab('daily-report')"><span class="nav-icon">📅</span><span>Daily</span></button>
+        <button class="nav-item" onclick="switchTab('daily-report')"><span class="nav-icon">📅</span><span>Shift</span></button>
         <button class="nav-item" onclick="switchTab('activity')"><span class="nav-icon">📄</span><span>Feed</span></button>
     </nav>
 
@@ -414,8 +453,9 @@
             <div class="form-group" id="editMethodGroup" style="display:none;">
                 <label>Paid Via</label>
                 <select id="editExpMethod">
-                    <option value="Cash">Cash</option>
-                    <option value="Online">Online / Bank Transfer</option>
+                    <option value="Till">Cash (Till)</option>
+                    <option value="Hand">Cash (Hand)</option>
+                    <option value="Bank">Online / Bank Transfer</option>
                     <option value="Card">Bank Card</option>
                 </select>
             </div>
@@ -440,54 +480,18 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. FIREBASE SETUP
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAgsaNY5g8jUhLzK_24Hzs9XzJ_DLfRDv4",
-            authDomain: "stackd-2d64b.firebaseapp.com",
-            databaseURL: "https://stackd-2d64b-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "stackd-2d64b",
-            storageBucket: "stackd-2d64b.firebasestorage.app",
-            messagingSenderId: "798632697218",
-            appId: "1:798632697218:web:97fd996539e977e2bf839b"
-        };
+        // GLOBAL VARIABLES & UTILS
+        let db, dbSales, dbExpenses, dbPayouts, dbTransfers;
+        let sales = []; let expenses = []; let salaryPayouts = []; let transfers = []; let currentFilter = 'All';
+        const generateID = () => Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
+        
+        const salaryTargets = { Ahmed: 20000, Kainat: 20000, Muqadas: 20000, Amroz: 25000 };
+        const TOTAL_SALARY_GOAL = 85000;
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        // HARDCODED DATA (Safe Initialization)
+        const rawSalesData = [{"id": "s_0", "date": "2026-08-19", "type": "Sale", "category": "Revenue", "details": "Cash: 10068 | Card: 0 | Online: 6218", "total": 16286}, {"id": "s_1", "date": "2026-08-19", "type": "Sale", "category": "Revenue", "details": "Cash: 0 | Card: 0 | Online: 1008", "total": 1008}, {"id": "s_2", "date": "2026-08-18", "type": "Sale", "category": "Revenue", "details": "Cash: 7636 | Card: 2286 | Online: 898", "total": 10820}, {"id": "s_3", "date": "2026-08-18", "type": "Sale", "category": "Revenue", "details": "Cash: 469 | Card: 0 | Online: 0", "total": 469}, {"id": "s_4", "date": "2026-08-17", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 19686}, {"id": "s_5", "date": "2026-08-16", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 21048}, {"id": "s_6", "date": "2026-08-15", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 22281}, {"id": "s_7", "date": "2026-08-14", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 40937}, {"id": "s_8", "date": "2026-08-13", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 1455}, {"id": "s_9", "date": "2026-08-12", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 24239}, {"id": "s_10", "date": "2026-08-11", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 35628}, {"id": "s_11", "date": "2026-08-10", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 19552}, {"id": "s_12", "date": "2026-08-09", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 28883}, {"id": "s_13", "date": "2026-08-08", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 25152}, {"id": "s_14", "date": "2026-08-07", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 35638}, {"id": "s_15", "date": "2026-08-06", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 23804}, {"id": "s_16", "date": "2026-08-05", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 29566}, {"id": "s_17", "date": "2026-08-04", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 34634}, {"id": "s_18", "date": "2026-08-03", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 44841}, {"id": "s_19", "date": "2026-08-02", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 65620}];
+        const rawExpensesData = [{"id": "e_0", "date": "2024-08-02", "details": "rotiyan", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 140.0}, {"id": "e_1", "date": "2024-08-02", "details": "weight machine", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 1050.0}, {"id": "e_2", "date": "2024-08-02", "details": "detol", "category": "Operating Expenses", "paymentMethod": "Till", "amount": 250.0}, {"id": "e_3", "date": "2024-08-02", "details": "tissue", "category": "Packaging", "paymentMethod": "Till", "amount": 500.0}, {"id": "e_4", "date": "2024-08-02", "details": "fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 200.0}, {"id": "e_5", "date": "2024-08-02", "details": "veggies", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1500.0}, {"id": "e_6", "date": "2024-08-02", "details": "bottles pepsi", "category": "Drinks", "paymentMethod": "Till", "amount": 7700.0}, {"id": "e_7", "date": "2024-08-02", "details": "for mack fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 4000.0}, {"id": "e_8", "date": "2024-08-02", "details": "pos", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 10000.0}, {"id": "e_9", "date": "2024-08-02", "details": "ahmed", "category": "Delivery", "paymentMethod": "Till", "amount": 500.0}, {"id": "e_10", "date": "2024-08-02", "details": "Milk pack", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 500.0}, {"id": "e_11", "date": "2024-08-02", "details": "shopper", "category": "Packaging", "paymentMethod": "Till", "amount": 500.0}, {"id": "e_12", "date": "2024-08-02", "details": "milk", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_13", "date": "2024-08-02", "details": "tortilla", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 3600.0}, {"id": "e_14", "date": "2024-08-02", "details": "delivery ahmed", "category": "Delivery", "paymentMethod": "Till", "amount": 320.0}, {"id": "e_15", "date": "2024-08-02", "details": "containers and scale", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 4750.0}, {"id": "e_16", "date": "2024-08-02", "details": "bottles", "category": "Packaging", "paymentMethod": "Till", "amount": 2400.0}, {"id": "e_17", "date": "2024-08-02", "details": "fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 400.0}, {"id": "e_18", "date": "2024-08-02", "details": "fries from tahaan", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 3600.0}, {"id": "e_19", "date": "2024-08-02", "details": "fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 16000.0}, {"id": "e_20", "date": "2024-08-02", "details": "k&ns", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 41000.0}, {"id": "e_21", "date": "2024-08-02", "details": "ahmed", "category": "Delivery", "paymentMethod": "Till", "amount": 450.0}, {"id": "e_22", "date": "2024-08-02", "details": "milk", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 540.0}, {"id": "e_23", "date": "2024-08-02", "details": "delivery ahmed", "category": "Delivery", "paymentMethod": "Till", "amount": 440.0}, {"id": "e_24", "date": "2024-08-02", "details": "gloves", "category": "Packaging", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_25", "date": "2024-08-02", "details": "7700 bottles", "category": "Packaging", "paymentMethod": "Till", "amount": 7700.0}, {"id": "e_26", "date": "2024-08-02", "details": "trays", "category": "Packaging", "paymentMethod": "Till", "amount": 600.0}, {"id": "e_27", "date": "2024-08-02", "details": "walkie talkie", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 13500.0}, {"id": "e_28", "date": "2024-08-02", "details": "sauce", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 16411.0}, {"id": "e_29", "date": "2024-08-02", "details": "onion grill and apron", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 5000.0}, {"id": "e_30", "date": "2024-08-02", "details": "food for employees", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 140.0}, {"id": "e_31", "date": "2024-08-02", "details": "delivery for weight", "category": "Delivery", "paymentMethod": "Till", "amount": 220.0}, {"id": "e_32", "date": "2024-08-02", "details": "cash taken", "category": "Owner Expenses", "paymentMethod": "Till", "amount": 700.0}, {"id": "e_33", "date": "2024-08-02", "details": "staff food", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 150.0}, {"id": "e_34", "date": "2024-08-08", "details": "oil", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 6000.0}, {"id": "e_35", "date": "2024-08-08", "details": "panaflex", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 9000.0}, {"id": "e_36", "date": "2024-08-08", "details": "board", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 15000.0}, {"id": "e_37", "date": "2024-08-08", "details": "haircut", "category": "Owner Expenses", "paymentMethod": "Till", "amount": 400.0}, {"id": "e_38", "date": "2024-08-08", "details": "chicken", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 17000.0}, {"id": "e_39", "date": "2024-08-08", "details": "speakers", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 4500.0}, {"id": "e_40", "date": "2024-08-08", "details": "sauces", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 42000.0}, {"id": "e_41", "date": "2024-08-09", "details": "ahmed delivery", "category": "Delivery", "paymentMethod": "Till", "amount": 1000.0}, {"id": "e_42", "date": "2024-08-09", "details": "aun printer", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 3400.0}, {"id": "e_43", "date": "2024-08-09", "details": "Gloves", "category": "Packaging", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_44", "date": "2024-08-09", "details": "misc", "category": "Operating Expenses", "paymentMethod": "Till", "amount": 75.0}, {"id": "e_45", "date": "2024-08-09", "details": "rotiyann", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 140.0}, {"id": "e_46", "date": "2024-08-10", "details": "staff food", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 200.0}, {"id": "e_47", "date": "2024-08-10", "details": "expenses", "category": "Operating Expenses", "paymentMethod": "Till", "amount": 1000.0}, {"id": "e_48", "date": "2024-08-10", "details": "perfume", "category": "Owner Expenses", "paymentMethod": "Till", "amount": 2292.0}, {"id": "e_49", "date": "2024-08-11", "details": "ahmed delivery", "category": "Delivery", "paymentMethod": "Till", "amount": 820.0}, {"id": "e_50", "date": "2024-08-11", "details": "3 ctn sprite", "category": "Drinks", "paymentMethod": "Till", "amount": 2400.0}, {"id": "e_51", "date": "2024-08-11", "details": "food", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1057.0}, {"id": "e_52", "date": "2024-08-11", "details": "rotiyan", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_53", "date": "2024-08-11", "details": "milk ctn", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 4200.0}, {"id": "e_54", "date": "2024-08-11", "details": "glasses", "category": "Packaging", "paymentMethod": "Till", "amount": 600.0}, {"id": "e_55", "date": "2024-08-12", "details": "tea", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 480.0}, {"id": "e_56", "date": "2024-08-12", "details": "k&ns", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 25350.0}, {"id": "e_57", "date": "2024-08-12", "details": "gloves", "category": "Packaging", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_58", "date": "2024-08-12", "details": "staff food", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_59", "date": "2024-08-12", "details": "chatgpt", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 1150.0}, {"id": "e_60", "date": "2024-08-13", "details": "fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 8000.0}, {"id": "e_61", "date": "2024-08-13", "details": "Misc", "category": "Operating Expenses", "paymentMethod": "Till", "amount": 4650.0}, {"id": "e_62", "date": "2024-08-13", "details": "veggies (280+300)", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 580.0}, {"id": "e_63", "date": "2024-08-13", "details": "petrol", "category": "Delivery", "paymentMethod": "Till", "amount": 2000.0}, {"id": "e_64", "date": "2024-08-13", "details": "pizza", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 2288.0}, {"id": "e_65", "date": "2024-08-13", "details": "foil and dips", "category": "Packaging", "paymentMethod": "Till", "amount": 2500.0}, {"id": "e_66", "date": "2024-08-13", "details": "paint", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 400.0}, {"id": "e_67", "date": "2024-08-13", "details": "ahmed delivery", "category": "Delivery", "paymentMethod": "Till", "amount": 120.0}, {"id": "e_68", "date": "2024-08-14", "details": "gas", "category": "Operating Expenses", "paymentMethod": "Till", "amount": 27000.0}, {"id": "e_69", "date": "2024-08-14", "details": "donut", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 300.0}, {"id": "e_70", "date": "2024-08-14", "details": "staff food", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 140.0}, {"id": "e_71", "date": "2024-08-14", "details": "cones", "category": "Packaging", "paymentMethod": "Till", "amount": 190.0}, {"id": "e_72", "date": "2024-08-14", "details": "lays", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 7450.0}, {"id": "e_73", "date": "2024-08-15", "details": "Ice berg", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 194.0}, {"id": "e_74", "date": "2024-08-15", "details": "ahmed", "category": "Delivery", "paymentMethod": "Till", "amount": 300.0}, {"id": "e_75", "date": "2024-08-16", "details": "food", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1060.0}, {"id": "e_76", "date": "2024-08-16", "details": "drinks", "category": "Drinks", "paymentMethod": "Till", "amount": 5000.0}, {"id": "e_77", "date": "2024-08-16", "details": "veggies", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1300.0}, {"id": "e_78", "date": "2024-08-16", "details": "roti", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 140.0}, {"id": "e_79", "date": "2024-08-16", "details": "staff food", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 210.0}, {"id": "e_80", "date": "2024-08-17", "details": "k&ns", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 14000.0}, {"id": "e_81", "date": "2024-08-17", "details": "food", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1200.0}, {"id": "e_82", "date": "2024-08-17", "details": "fries", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 8000.0}, {"id": "e_83", "date": "2024-08-18", "details": "wraps", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 1620.0}, {"id": "e_84", "date": "2024-08-18", "details": "jalapeno and olive", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 22500.0}, {"id": "e_85", "date": "2024-08-18", "details": "cheese", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 13776.0}, {"id": "e_86", "date": "2026-08-18", "details": "3 days ahmed delivery ", "category": "Delivery", "paymentMethod": "Till", "amount": 650.0}, {"id": "e_87", "date": "2026-08-18", "details": "Stackd for mother", "category": "Owner Expenses", "paymentMethod": "Till", "amount": 440.0}, {"id": "e_88", "date": "2026-08-18", "details": "rotiya", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_89", "date": "2026-08-18", "details": "McDonald's ", "category": "Owner Expenses", "paymentMethod": "Till", "amount": 900.0}, {"id": "e_90", "date": "2026-08-18", "details": "Milk", "category": "Food & Ingredients", "paymentMethod": "Till", "amount": 4200.0}, {"id": "e_91", "date": "2026-08-18", "details": "Instagram verification badge", "category": "Business Reinvestment", "paymentMethod": "Bank", "amount": 1900.0}, {"id": "e_92", "date": "2026-08-19", "details": "Milk", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 120.0}, {"id": "e_93", "date": "2026-08-19", "details": "3inch paper roll", "category": "Business Reinvestment", "paymentMethod": "Till", "amount": 350.0}, {"id": "e_94", "date": "2026-08-19", "details": "Rotiya", "category": "Staff Expenses", "paymentMethod": "Till", "amount": 100.0}, {"id": "e_95", "date": "2026-08-19", "details": "Gemini", "category": "Owner Expenses", "paymentMethod": "Online", "amount": 425.0}, {"id": "e_96", "date": "2026-08-20", "details": "Daily Salary Reserve", "category": "Salaries & Wages", "paymentMethod": "Bank", "amount": 4000.0}];
 
-        let sales = [];
-        let expenses = [];
-        let salaryPayouts = [];
-        let transfers = [];
-        let currentFilter = 'All';
-        const generateID = () => '_' + Math.random().toString(36).substr(2, 9);
-
-        // Corrected Sales Data to match exactly Rs 501,547 without duplicates
-        const rawSalesData = [
-            {"id": "s_0", "date": "2026-08-19", "type": "Sale", "category": "Revenue", "details": "Cash: 10068 | Card: 0 | Online: 6218", "total": 16286},
-            {"id": "s_1", "date": "2026-08-19", "type": "Sale", "category": "Revenue", "details": "Cash: 0 | Card: 0 | Online: 1008", "total": 1008},
-            {"id": "s_2", "date": "2026-08-18", "type": "Sale", "category": "Revenue", "details": "Cash: 7636 | Card: 2286 | Online: 898", "total": 10820},
-            {"id": "s_3", "date": "2026-08-18", "type": "Sale", "category": "Revenue", "details": "Cash: 469 | Card: 0 | Online: 0", "total": 469},
-            {"id": "s_4", "date": "2026-08-17", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 19686},
-            {"id": "s_5", "date": "2026-08-16", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 21048},
-            {"id": "s_6", "date": "2026-08-15", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 22281},
-            {"id": "s_7", "date": "2026-08-14", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 40937},
-            {"id": "s_8", "date": "2026-08-13", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 1455},
-            {"id": "s_9", "date": "2026-08-12", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 24239},
-            {"id": "s_10", "date": "2026-08-11", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 35628},
-            {"id": "s_11", "date": "2026-08-10", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 19552},
-            {"id": "s_12", "date": "2026-08-09", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 28883},
-            {"id": "s_13", "date": "2026-08-08", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 25152},
-            {"id": "s_14", "date": "2026-08-07", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 35638},
-            {"id": "s_15", "date": "2026-08-06", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 23804},
-            {"id": "s_16", "date": "2026-08-05", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 29566},
-            {"id": "s_17", "date": "2026-08-04", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 34634},
-            {"id": "s_18", "date": "2026-08-03", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 44841},
-            {"id": "s_19", "date": "2026-08-02", "type": "Sale", "category": "Revenue", "details": "Imported Data", "total": 65620}
-        ];
-
-        // Calculate business shift date
         function getBusinessDate() {
             try {
                 const now = new Date();
@@ -495,19 +499,9 @@
                 const offset = now.getTimezoneOffset();
                 const localNow = new Date(now.getTime() - (offset*60*1000));
                 return localNow.toISOString().split('T')[0];
-            } catch(e) { return new Date().toISOString().split('T')[0]; }
+            } catch(e) { return "2026-08-20"; }
         }
 
-        // Setup Dates Safely
-        try {
-            const bd = getBusinessDate();
-            if(document.getElementById('addSaleDate')) document.getElementById('addSaleDate').value = bd;
-            if(document.getElementById('addExpDate')) document.getElementById('addExpDate').value = bd;
-            if(document.getElementById('dailyReportDate')) document.getElementById('dailyReportDate').value = bd;
-            if(document.getElementById('payoutDate')) document.getElementById('payoutDate').value = bd;
-        } catch(e){}
-
-        // Menu & UI Toggles
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -515,41 +509,73 @@
 
         function showToast(msg) {
             const t = document.getElementById('toast');
+            if(!t) return;
             t.textContent = msg; t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
         // ==========================================
-        // 2. CLOUD SYNCING & AUTO-FIX
+        // 2. CRASH-PROOF INITIALIZATION
         // ==========================================
-        const dbSales = db.ref('sales');
-        const dbExpenses = db.ref('expenses');
-        const dbPayouts = db.ref('salaryPayouts');
-        const dbTransfers = db.ref('transfers');
+        document.addEventListener("DOMContentLoaded", () => {
+            // Setup Dates Safely
+            try {
+                const bd = getBusinessDate();
+                if(document.getElementById('addSaleDate')) document.getElementById('addSaleDate').value = bd;
+                if(document.getElementById('addExpDate')) document.getElementById('addExpDate').value = bd;
+                if(document.getElementById('dailyReportDate')) document.getElementById('dailyReportDate').value = bd;
+                if(document.getElementById('payoutDate')) document.getElementById('payoutDate').value = bd;
+            } catch(e) {}
 
-        // FORCE CORRECT SALES
-        dbSales.once('value').then((s) => {
-            const currentSales = s.val() ? Object.values(s.val()) : [];
-            const currentTotal = currentSales.reduce((a, b) => a + (b.total||0), 0);
-            
-            // If the total is wrong (due to previous duplicates), overwrite with exact numbers
-            if(Math.abs(currentTotal - 501547) > 10) {
-                dbSales.set(null); // Clear corrupted
-                rawSalesData.forEach(sale => { dbSales.child(sale.id).set(sale); });
-                showToast("Sales Log Corrected to Rs 501,547");
-            }
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.database();
+                
+                // Connecting to a pristine, clean database root to avoid corrupted legacy data
+                dbSales = db.ref('stackdData_V2/sales');
+                dbExpenses = db.ref('stackdData_V2/expenses');
+                dbPayouts = db.ref('stackdData_V2/salaryPayouts');
+                dbTransfers = db.ref('stackdData_V2/transfers');
+
+                // FORCE CORRECT DATA IF CLOUD IS EMPTY
+                db.ref('stackdData_V2/initialized').once('value').then(snap => {
+                    if(!snap.exists()) {
+                        showToast("Initializing Cloud Data...");
+                        rawSalesData.forEach(s => dbSales.child(s.id).set(s));
+                        rawExpensesData.forEach(e => dbExpenses.child(e.id).set(e));
+                        
+                        // Force the EXACT Balances via adjustment transfers
+                        const adjs = [
+                            { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Till', amount: 4120 },
+                            { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Hand', amount: 24000 },
+                            { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Bank', amount: 11000 },
+                            { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Vault', amount: 44933 }
+                        ];
+                        adjs.forEach(a => dbTransfers.child(a.id).set(a));
+                        db.ref('stackdData_V2/initialized').set(true);
+                    }
+                });
+
+                dbSales.on('value', (s) => { sales = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+                dbExpenses.on('value', (s) => { expenses = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+                dbPayouts.on('value', (s) => { salaryPayouts = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+                dbTransfers.on('value', (s) => { transfers = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+
+                db.ref('.info/connected').on('value', function(snap) {
+                    const pill = document.getElementById('headerProfitPill');
+                    if(pill) {
+                        if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
+                        else { pill.textContent = "Offline Mode"; pill.className = "net-pill negative"; }
+                    }
+                });
+            } catch (e) { console.error("Firebase Error", e); }
         });
-
-        dbSales.on('value', (s) => { sales = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbExpenses.on('value', (s) => { expenses = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbPayouts.on('value', (s) => { salaryPayouts = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbTransfers.on('value', (s) => { transfers = s.val() ? Object.values(s.val()) : []; refreshAll(); });
 
         function refreshAll() {
             try {
                 renderDashboard();
                 renderCategoryBreakdown();
-                renderFeed();
+                renderGroupedFeed();
                 generateDailyReport();
                 renderSalaryVault();
                 const activeSalesFilter = document.querySelector('#salesFilters .chip.active');
@@ -558,28 +584,51 @@
         }
 
         function getBalances() {
-            let c = 0; let b = 0;
+            let c = 0; let b = 0; let v = 0; let h = 0;
             (sales||[]).forEach(s => {
                 const det = s.details || '';
-                const cMatch = det.match(/Cash:\s*(\d+(\.\d+)?)/);
-                const caMatch = det.match(/Card:\s*(\d+(\.\d+)?)/);
+                const cMatch = det.match(/Till:\s*(\d+(\.\d+)?)/);
+                const hMatch = det.match(/Hand:\s*(\d+(\.\d+)?)/);
                 const oMatch = det.match(/Online:\s*(\d+(\.\d+)?)/);
-                if (det === "Imported Data") { c += (s.total||0); } 
-                else { c += cMatch ? parseFloat(cMatch[1]) : 0; b += caMatch ? parseFloat(caMatch[1]) : 0; b += oMatch ? parseFloat(oMatch[1]) : 0; }
+                if (cMatch || hMatch || oMatch) { 
+                    c += cMatch ? parseFloat(cMatch[1]) : 0; 
+                    h += hMatch ? parseFloat(hMatch[1]) : 0; 
+                    b += oMatch ? parseFloat(oMatch[1]) : 0; 
+                } 
+                else { 
+                    const oldMatch = det.match(/Cash:\s*(\d+(\.\d+)?)/);
+                    if(oldMatch) c += parseFloat(oldMatch[1]);
+                    else c += (s.total||0); 
+                }
             });
             (expenses||[]).forEach(e => {
+                if(e.category === 'Salaries & Wages') { v += (e.amount||0); }
                 if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { b -= (e.amount||0); } 
+                else if (e.paymentMethod === 'Hand') { h -= (e.amount||0); }
                 else { c -= (e.amount||0); }
+            });
+            (salaryPayouts||[]).forEach(p => {
+                v -= (p.amount||0);
+                if (p.paymentMethod === 'Bank') b -= (p.amount||0); 
+                else if (p.paymentMethod === 'Hand') h -= (p.amount||0); 
+                else c -= (p.amount||0);
             });
             (transfers||[]).forEach(t => {
                 if(t.direction === 'CashToBank') { c -= (t.amount||0); b += (t.amount||0); }
                 else if(t.direction === 'BankToCash') { b -= (t.amount||0); c += (t.amount||0); }
+                else if(t.direction === 'TillToHand') { c -= (t.amount||0); h += (t.amount||0); }
+                else if(t.direction === 'TillToBank') { c -= (t.amount||0); b += (t.amount||0); }
+                else if(t.direction === 'HandToBank') { h -= (t.amount||0); b += (t.amount||0); }
+                else if(t.direction === 'BankToHand') { b -= (t.amount||0); h += (t.amount||0); }
+                else if(t.direction === 'BankToTill') { b -= (t.amount||0); c += (t.amount||0); }
                 else if(t.direction === 'Adjustment') {
-                    if(t.account === 'Cash') c += (t.amount||0);
+                    if(t.account === 'Cash' || t.account === 'Till') c += (t.amount||0);
+                    if(t.account === 'Hand') h += (t.amount||0);
                     if(t.account === 'Bank') b += (t.amount||0);
+                    if(t.account === 'Vault') v += (t.amount||0);
                 }
             });
-            return { cash: c, bank: b };
+            return { till: c, hand: h, bank: b, vault: v };
         }
 
         // ==========================================
@@ -591,22 +640,21 @@
             const profit = totalS - totalE;
             const bals = getBalances();
 
-            if(document.getElementById('dashCash')) document.getElementById('dashCash').textContent = `Rs ${bals.cash.toLocaleString()}`;
+            if(document.getElementById('dashTill')) document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`;
+            if(document.getElementById('dashHand')) document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
             if(document.getElementById('dashBank')) document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
-            if(document.getElementById('balCash')) document.getElementById('balCash').textContent = `Rs ${bals.cash.toLocaleString()}`;
+            
+            if(document.getElementById('balTill')) document.getElementById('balTill').textContent = `Rs ${bals.till.toLocaleString()}`;
+            if(document.getElementById('balHand')) document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`;
             if(document.getElementById('balBank')) document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
 
             if(document.getElementById('dashTotalSales')) document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`;
+            if(document.getElementById('dashVault')) document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
+            
             const np = document.getElementById('dashNetProfit');
             if(np) {
                 np.textContent = `Rs ${profit.toLocaleString()}`;
                 np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
-            }
-
-            const pill = document.getElementById('headerProfitPill');
-            if(pill) {
-                pill.textContent = `Net: Rs ${profit.toLocaleString()}`;
-                pill.className = profit >= 0 ? 'net-pill positive' : 'net-pill negative';
             }
         }
 
@@ -614,7 +662,8 @@
             const cats = {};
             (expenses||[]).forEach(e => { cats[e.category || 'Operating Expenses'] = (cats[e.category] || 0) + (e.amount||0); });
             const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]);
-            const list = document.getElementById('categoryBreakdownList'); if(!list) return;
+            const list = document.getElementById('categoryBreakdownList');
+            if(!list) return;
             list.innerHTML = '';
             const colors = { 'Food & Ingredients': 'var(--yellow)', 'Salaries & Wages': 'var(--green)', 'Owner Expenses': 'var(--red)', 'Staff Expenses': 'var(--blue)', 'Business Reinvestment': 'var(--purple)' };
 
@@ -647,33 +696,42 @@
                 filtered = filtered.filter(s => (s.date||'').startsWith(today.substring(0, 7)));
             }
             
-            filtered.sort((a,b) => {
-                if (a.date !== b.date) return new Date(b.date||0) - new Date(a.date||0);
-                return (b.id||'').localeCompare(a.id||'');
+            filtered.sort((a,b) => { 
+                if (a.date !== b.date) return new Date(b.date||0) - new Date(a.date||0); 
+                return (b.id||'').localeCompare(a.id||''); 
             });
-
+            
             const tot = filtered.reduce((a,b) => a+(b.total||0), 0);
             if(document.getElementById('salesFilterTotal')) document.getElementById('salesFilterTotal').textContent = `Rs ${tot.toLocaleString()}`;
             
-            const list = document.getElementById('salesOnlyList'); if(!list) return;
+            const list = document.getElementById('salesOnlyList');
+            if(!list) return;
             list.innerHTML = '';
-            filtered.forEach(s => {
-                list.innerHTML += `<div class="tx-card">
-                    <div class="tx-left"><div class="tx-title">${s.date||''}</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details||''}</div></div>
-                    <div class="tx-right"><div class="tx-amount positive">Rs ${(s.total||0).toLocaleString()}</div>
-                    <button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div>
-                </div>`;
-            });
+            
+            const grouped = {};
+            filtered.forEach(s => { const d = s.date || 'Unknown'; if(!grouped[d]) grouped[d] = []; grouped[d].push(s); });
+            
+            for(const date in grouped) {
+                list.innerHTML += `<div class="date-header">${date}</div>`;
+                grouped[date].forEach(s => {
+                    list.innerHTML += `<div class="tx-card">
+                        <div class="tx-left"><div class="tx-title">Daily Sale</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details}</div></div>
+                        <div class="tx-right"><div class="tx-amount positive">Rs ${(s.total||0).toLocaleString()}</div>
+                        <button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div>
+                    </div>`;
+                });
+            }
         }
 
-        function renderFeed() {
-            const feed = document.getElementById('activityFeed'); if(!feed) return;
+        function renderGroupedFeed() {
+            const feed = document.getElementById('activityFeed');
+            if(!feed) return;
             feed.innerHTML = '';
             let combined = [...(sales||[]).map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...(expenses||[]).map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
             
-            combined.sort((a, b) => {
-                if (a.date !== b.date) return new Date(b.date||0) - new Date(a.date||0);
-                return (b.id||'').localeCompare(a.id||'');
+            combined.sort((a, b) => { 
+                if (a.date !== b.date) return new Date(b.date||0) - new Date(a.date||0); 
+                return (b.id||'').localeCompare(a.id||''); 
             });
 
             if (currentFilter !== 'All') {
@@ -681,29 +739,36 @@
                 else combined = combined.filter(i => !i.isSale && i.category === currentFilter);
             }
 
-            combined.forEach(item => {
-                const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Cash');
-                feed.innerHTML += `<div class="tx-card">
-                    <div class="tx-left">
-                        <div class="tx-title">${item.details||''}</div>
-                        <div class="tx-sub"><span>${item.date||''}</span><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div>
-                    </div>
-                    <div class="tx-right">
-                        <div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${(item.displayAmount||0).toLocaleString()}</div>
-                        <div class="tx-actions">
-                            <button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button>
-                            <button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button>
+            const grouped = {};
+            combined.forEach(item => { const d = item.date || 'Unknown'; if(!grouped[d]) grouped[d] = []; grouped[d].push(item); });
+
+            for(const date in grouped) {
+                feed.innerHTML += `<div class="date-header">${date}</div>`;
+                grouped[date].forEach(item => {
+                    const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Till');
+                    feed.innerHTML += `<div class="tx-card">
+                        <div class="tx-left">
+                            <div class="tx-title">${item.details}</div>
+                            <div class="tx-sub"><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div>
                         </div>
-                    </div>
-                </div>`;
-            });
+                        <div class="tx-right">
+                            <div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${(item.displayAmount||0).toLocaleString()}</div>
+                            <div class="tx-actions">
+                                <button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button>
+                                <button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            }
         }
 
         // ==========================================
         // FEATURE: DAILY REPORT & DRAWER
         // ==========================================
         function generateDailyReport() {
-            const el = document.getElementById('dailyReportDate'); if(!el) return;
+            const el = document.getElementById('dailyReportDate');
+            if(!el) return;
             const targetDate = el.value;
             const dSales = (sales||[]).filter(s => s.date === targetDate);
             const dExps = (expenses||[]).filter(e => e.date === targetDate);
@@ -713,13 +778,15 @@
             
             let todayCashIn = 0;
             dSales.forEach(s => {
-                const cMatch = (s.details||'').match(/Cash:\s*(\d+(\.\d+)?)/);
-                todayCashIn += cMatch ? parseFloat(cMatch[1]) : (s.details==="Imported Data"? (s.total||0) : 0);
+                const det = s.details||'';
+                const cMatch = det.match(/Till:\s*(\d+(\.\d+)?)/);
+                if(cMatch) { todayCashIn += parseFloat(cMatch[1]); }
+                else { const oldMatch = det.match(/Cash:\s*(\d+(\.\d+)?)/); todayCashIn += oldMatch ? parseFloat(oldMatch[1]) : (s.total||0); }
             });
             
             let todayCashOut = 0;
             dExps.forEach(e => {
-                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card') {
+                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card' && e.paymentMethod !== 'Hand') {
                     todayCashOut += (e.amount||0);
                 }
             });
@@ -734,14 +801,15 @@
                 drCash.style.color = drawerBalance >= 0 ? "var(--green)" : "var(--red)";
             }
 
-            const list = document.getElementById('drFeedList'); if(!list) return;
+            const list = document.getElementById('drFeedList');
+            if(!list) return;
             list.innerHTML = '';
             let combined = [...dSales.map(s => ({ ...s, d: s.total, is: true })), ...dExps.map(e => ({ ...e, d: e.amount, is: false }))];
             if(combined.length === 0) list.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No logs for this date.</p>`;
             
             combined.forEach(item => {
                 list.innerHTML += `<div class="tx-card" style="padding:10px;">
-                    <div class="tx-left"><div class="tx-title">${item.details||''}</div><div class="tx-badge" style="width:fit-content">${item.category || (item.is ? 'Sale':'Exp')}</div></div>
+                    <div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-badge" style="width:fit-content">${item.category || (item.is ? 'Sale':'Exp')}</div></div>
                     <div class="tx-right"><div class="tx-amount ${item.is ? 'positive' : 'negative'}">${item.is ? '+' : '-'} Rs ${(item.d||0).toLocaleString()}</div></div>
                 </div>`;
             });
@@ -751,19 +819,43 @@
         // FEATURE: SALARY VAULT
         // ==========================================
         function renderSalaryVault() {
-            const reserves = (expenses||[]).filter(e => e.category === 'Salaries & Wages').reduce((a, b) => a + (b.amount||0), 0);
-            const payouts = (salaryPayouts||[]).reduce((a, b) => a + (b.amount||0), 0);
-            
-            const balance = reserves - payouts;
-            if(document.getElementById('vaultBalance')) document.getElementById('vaultBalance').textContent = `Rs ${balance.toLocaleString()}`;
+            const vaultBal = getBalances().vault;
+            if(document.getElementById('vaultBalance')) document.getElementById('vaultBalance').textContent = `Rs ${vaultBal.toLocaleString()}`;
 
-            const feed = document.getElementById('vaultFeed'); if(!feed) return;
+            const empUI = document.getElementById('employeeProgressBars');
+            if(empUI) {
+                empUI.innerHTML = `<h3 style="color:var(--yellow); margin-bottom:15px;">Vault Progress vs 85k Salary Goal</h3>`;
+                const overallPct = Math.min((vaultBal / TOTAL_SALARY_GOAL) * 100, 100);
+                
+                empUI.innerHTML += `
+                    <div class="progress-wrapper">
+                        <div class="progress-header"><span>Overall Salary Pool</span><span>Rs ${vaultBal.toLocaleString()} / 85k</span></div>
+                        <div class="progress-bar-bg" style="height:16px;"><div class="progress-fill ${overallPct===100?'full':''}" style="width: ${overallPct}%;"></div></div>
+                    </div><hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">`;
+                
+                const currentMonth = getBusinessDate().substring(0, 7); 
+                const monthPayouts = (salaryPayouts||[]).filter(p => (p.date||'').startsWith(currentMonth));
+                
+                for(const [emp, target] of Object.entries(salaryTargets)) {
+                    const paid = monthPayouts.filter(p => p.employee === emp).reduce((a,b) => a+(b.amount||0), 0); 
+                    const pct = Math.min((paid / target) * 100, 100);
+                    empUI.innerHTML += `
+                        <div class="progress-wrapper">
+                            <div class="progress-header"><span>${emp} Paid</span><span>Rs ${paid.toLocaleString()} / ${target.toLocaleString()}</span></div>
+                            <div class="progress-bar-bg"><div class="progress-fill ${pct===100?'full':''}" style="width: ${pct}%;"></div></div>
+                        </div>`;
+                }
+            }
+
+            const feed = document.getElementById('vaultFeed');
+            if(!feed) return;
             feed.innerHTML = '';
             
             let combined = [
                 ...(expenses||[]).filter(e => e.category === 'Salaries & Wages').map(e => ({...e, type: 'IN'})),
                 ...(salaryPayouts||[]).map(p => ({...p, type: 'OUT'}))
             ];
+            
             combined.sort((a, b) => { 
                 if (a.date !== b.date) return new Date(b.date||0) - new Date(a.date||0); 
                 return (b.id||'').localeCompare(a.id||''); 
@@ -771,10 +863,11 @@
 
             combined.forEach(item => {
                 const isOut = item.type === 'OUT';
+                const sub = isOut ? `Paid to: ${item.employee} (${item.paymentMethod})` : `Added from ${item.paymentMethod || 'Till'}`;
                 feed.innerHTML += `<div class="tx-card">
                     <div class="tx-left">
-                        <div class="tx-title">${item.details||''}</div>
-                        <div class="tx-sub"><span>${item.date||''}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${isOut ? 'Payout' : 'Added to Reserve'}</span></div>
+                        <div class="tx-title">${item.details}</div>
+                        <div class="tx-sub"><span>${item.date}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${sub}</span></div>
                     </div>
                     <div class="tx-right">
                         <div class="tx-amount ${isOut ? 'negative' : 'positive'}">${isOut ? '-' : '+'} Rs ${(item.amount||0).toLocaleString()}</div>
@@ -786,13 +879,13 @@
 
         function handlePayoutSubmit(e) {
             e.preventDefault();
-            const p = { id: generateID(), date: document.getElementById('payoutDate').value, details: document.getElementById('payoutDesc').value, amount: parseFloat(document.getElementById('payoutAmount').value) };
-            dbPayouts.child(p.id).set(p);
+            const p = { id: generateID(), date: document.getElementById('payoutDate').value, employee: document.getElementById('payoutEmployee').value, paymentMethod: document.getElementById('payoutMethod').value, details: `Vault Payout`, amount: parseFloat(document.getElementById('payoutAmount').value) };
+            if(dbPayouts) dbPayouts.child(p.id).set(p);
             e.target.reset(); if(document.getElementById('payoutDate')) document.getElementById('payoutDate').value = getBusinessDate();
             showToast("Payout Logged!");
         }
 
-        function deletePayout(id) { if(confirm("Delete this salary payout?")) dbPayouts.child(id).remove(); }
+        function deletePayout(id) { if(confirm("Delete this salary payout?")) if(dbPayouts) dbPayouts.child(id).remove(); }
 
         // ==========================================
         // FEATURE: TRANSFERS & BALANCES
@@ -800,22 +893,26 @@
         function handleTransfer(e) {
             e.preventDefault();
             const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) };
-            dbTransfers.child(t.id).set(t);
+            if(dbTransfers) dbTransfers.child(t.id).set(t);
             e.target.reset(); showToast("Transfer Saved!");
         }
 
         function adjustHolding(account) {
-            const inputEl = document.getElementById(account === 'Cash' ? 'adjCashAmt' : 'adjBankAmt');
-            if(!inputEl || !inputEl.value) return;
-            const target = parseFloat(inputEl.value);
+            const input = document.getElementById(account === 'Cash' ? 'adjCashAmt' : 'adjBankAmt'); // Fallback
+            const el = document.getElementById(`adj${account}Amt`);
+            const targetStr = el ? el.value : (input ? input.value : '');
+            
+            if(!targetStr) return;
+            const target = parseFloat(targetStr);
             const current = getBalances()[account.toLowerCase()];
             const diff = target - current;
             
             if(diff === 0) return showToast("Already accurate!");
             
             const adj = { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: account, amount: diff };
-            dbTransfers.child(adj.id).set(adj);
-            inputEl.value = '';
+            if(dbTransfers) dbTransfers.child(adj.id).set(adj);
+            
+            if(el) el.value = ''; if(input) input.value = '';
             showToast(`${account} forcefully set to Rs ${target}`);
         }
 
@@ -824,10 +921,11 @@
         // ==========================================
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            const vs = document.getElementById(`view-${tabId}`); if(vs) vs.classList.add('active');
+            const view = document.getElementById(`view-${tabId}`);
+            if(view) view.classList.add('active');
             
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const btnMap = {'dashboard': 0, 'sales': 1, 'daily-report': 2, 'activity': 3};
+            const btnMap = {'dashboard': 0, 'sales': 1, 'add': 2, 'daily-report': 3, 'activity': 4};
             if(btnMap[tabId] !== undefined) {
                 const navItems = document.querySelectorAll('.bottom-nav .nav-item');
                 if(navItems[btnMap[tabId]]) navItems[btnMap[tabId]].classList.add('active');
@@ -839,8 +937,8 @@
             const isSale = type === 'Sale';
             const bS = document.getElementById('btnTypeSale'); if(bS) bS.classList.toggle('active', isSale);
             const bE = document.getElementById('btnTypeExpense'); if(bE) bE.classList.toggle('active', !isSale);
-            const sF = document.getElementById('saleForm'); if(sF) sF.style.display = isSale ? 'block' : 'none';
-            const eF = document.getElementById('expenseForm'); if(eF) eF.style.display = isSale ? 'none' : 'block';
+            const fS = document.getElementById('saleForm'); if(fS) fS.style.display = isSale ? 'block' : 'none';
+            const fE = document.getElementById('expenseForm'); if(fE) fE.style.display = isSale ? 'none' : 'block';
         }
 
         function setFilter(cat, chip) {
@@ -851,13 +949,13 @@
 
         function handleSaleSubmit(e) {
             e.preventDefault();
-            const cash = parseFloat(document.getElementById('addSaleCash').value) || 0;
-            const card = parseFloat(document.getElementById('addSaleCard').value) || 0;
+            const till = parseFloat(document.getElementById('addSaleTill').value) || 0;
+            const hand = parseFloat(document.getElementById('addSaleHand').value) || 0;
             const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
-            if (cash + card + online === 0) return alert('Enter at least one sale amount');
+            if (till + hand + online === 0) return alert('Enter at least one sale amount');
             
-            const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Cash: ${cash} | Card: ${card} | Online: ${online}`, total: cash + card + online };
-            dbSales.child(sale.id).set(sale);
+            const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Till: ${till} | Hand: ${hand} | Online: ${online}`, total: till + hand + online };
+            if(dbSales) dbSales.child(sale.id).set(sale);
             e.target.reset(); if(document.getElementById('addSaleDate')) document.getElementById('addSaleDate').value = getBusinessDate(); 
             showToast("Sale Logged!"); switchTab('dashboard');
         }
@@ -865,19 +963,21 @@
         function handleExpenseSubmit(e) {
             e.preventDefault();
             const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
-            dbExpenses.child(exp.id).set(exp);
+            if(dbExpenses) dbExpenses.child(exp.id).set(exp);
             e.target.reset(); if(document.getElementById('addExpDate')) document.getElementById('addExpDate').value = getBusinessDate(); 
             showToast("Expense Logged!"); switchTab('dashboard');
         }
 
         function quickAddSalary() {
-            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Cash', details: 'Daily Salary Reserve', amount: 4000 };
-            dbExpenses.child(exp.id).set(exp); showToast("Vault Funded!"); switchTab('salary-vault');
+            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Bank', details: 'Daily Salary Reserve', amount: 4000 };
+            if(dbExpenses) dbExpenses.child(exp.id).set(exp); 
+            showToast("Vault Funded from Bank!"); switchTab('salary-vault');
         }
 
         function deleteEntry(id, type) {
             if (!confirm('Delete this entry permanently?')) return;
-            if (type === 'Sale') dbSales.child(id).remove(); else dbExpenses.child(id).remove();
+            if (type === 'Sale') { if(dbSales) dbSales.child(id).remove(); }
+            else { if(dbExpenses) dbExpenses.child(id).remove(); }
         }
 
         function openEditModal(id, type) {
@@ -895,10 +995,10 @@
             const eg2 = document.getElementById('editMethodGroup'); if(eg2) eg2.style.display = isSale ? 'none' : 'block';
             
             if(!isSale) { 
-                const elCat = document.getElementById('editCategory'); if(elCat) elCat.value = item.category; 
-                const elMeth = document.getElementById('editExpMethod'); if(elMeth) elMeth.value = item.paymentMethod || 'Cash'; 
+                const elCat = document.getElementById('editCategory'); if(elCat) elCat.value = item.category;
+                const elMeth = document.getElementById('editExpMethod'); if(elMeth) elMeth.value = item.paymentMethod || 'Till'; 
             }
-            const mod = document.getElementById('editModal'); if(mod) mod.classList.add('open');
+            const modal = document.getElementById('editModal'); if(modal) modal.classList.add('open');
         }
 
         function closeModal(modalId) { const m = document.getElementById(modalId); if(m) m.classList.remove('open'); }
@@ -908,12 +1008,44 @@
             const type = document.getElementById('editType').value;
             if (type === 'Sale') {
                 const item = (sales||[]).find(s => s.id === id);
-                if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); dbSales.child(id).set(item); }
+                if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); if(dbSales) dbSales.child(id).set(item); }
             } else {
                 const item = (expenses||[]).find(e => e.id === id);
-                if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); dbExpenses.child(id).set(item); }
+                if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); if(dbExpenses) dbExpenses.child(id).set(item); }
             }
             showToast("Saved!"); closeModal('editModal');
+        }
+
+        // ==========================================
+        // 5. SHIFT END CALCULATOR
+        // ==========================================
+        function calcDenom() {
+            let t = 0;
+            t += (parseInt(document.getElementById('n5000').value)||0)*5000; t += (parseInt(document.getElementById('n1000').value)||0)*1000;
+            t += (parseInt(document.getElementById('n500').value)||0)*500; t += (parseInt(document.getElementById('n100').value)||0)*100;
+            t += (parseInt(document.getElementById('n50').value)||0)*50; t += (parseInt(document.getElementById('n20').value)||0)*20;
+            t += (parseInt(document.getElementById('n10').value)||0)*10;
+            document.getElementById('denomTotal').textContent = `Rs ${t.toLocaleString()}`;
+            const taken = parseFloat(document.getElementById('denomTaken').value)||0;
+            document.getElementById('denomLeft').textContent = `Rs ${(t - taken).toLocaleString()}`;
+        }
+
+        function processShiftEnd() {
+            const taken = parseFloat(document.getElementById('denomTaken').value)||0;
+            if(taken > 0) {
+                const dest = document.getElementById('denomDest').value;
+                const t = { id: generateID(), date: getBusinessDate(), direction: dest === 'Bank' ? 'TillToBank' : 'TillToHand', amount: taken };
+                if(dbTransfers) dbTransfers.child(t.id).set(t);
+            }
+            const bankConf = document.getElementById('shiftBankConfirm').value;
+            if(bankConf) adjustHolding('Bank', parseFloat(bankConf));
+            
+            showToast("Shift Closed! Downloading Backup...");
+            document.querySelectorAll('.denom-row input').forEach(i => i.value=''); 
+            document.getElementById('denomTaken').value=''; 
+            document.getElementById('shiftBankConfirm').value=''; 
+            document.getElementById('shiftCardConfirm').value=''; calcDenom();
+            document.getElementById('exportRange').value = 'all'; generateReport('csv');
         }
 
         // ==========================================
@@ -927,7 +1059,7 @@
             let fSales = sales||[]; let fExp = expenses||[]; let dateText = "Lifetime Data";
 
             if(range === 'month') {
-                const now = new Date(); const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                const currentMonth = getBusinessDate().substring(0, 7);
                 fSales = fSales.filter(s => (s.date||'').startsWith(currentMonth)); fExp = fExp.filter(e => (e.date||'').startsWith(currentMonth)); dateText = `Month: ${currentMonth}`;
             } else if (range === 'custom') {
                 const start = document.getElementById('exportStart').value; const end = document.getElementById('exportEnd').value;
@@ -954,12 +1086,12 @@
         }
 
         function exportToPDF(data, tSales, tExp, dateText) {
-            const drt = document.getElementById('pdfDateRangeText'); if(drt) drt.textContent = dateText; 
-            const pts = document.getElementById('pdfTotalSales'); if(pts) pts.textContent = `Rs ${tSales.toLocaleString()}`; 
-            const pte = document.getElementById('pdfTotalExp'); if(pte) pte.textContent = `Rs ${tExp.toLocaleString()}`; 
+            const drt = document.getElementById('pdfDateRangeText'); if(drt) drt.textContent = dateText;
+            const pts = document.getElementById('pdfTotalSales'); if(pts) pts.textContent = `Rs ${tSales.toLocaleString()}`;
+            const pte = document.getElementById('pdfTotalExp'); if(pte) pte.textContent = `Rs ${tExp.toLocaleString()}`;
             const pnp = document.getElementById('pdfNetProfit'); if(pnp) pnp.textContent = `Rs ${(tSales - tExp).toLocaleString()}`;
             
-            const tbody = document.getElementById('pdfTableBody'); 
+            const tbody = document.getElementById('pdfTableBody');
             if(tbody) {
                 tbody.innerHTML = '';
                 data.forEach(item => { tbody.innerHTML += `<tr><td style="padding:10px; border-bottom:1px solid #ddd;">${item.date}</td><td style="padding:10px; border-bottom:1px solid #ddd; color:${item.isSale?'green':'red'}">${item.isSale ? 'Sale' : 'Expense'}</td><td style="padding:10px; border-bottom:1px solid #ddd;">${item.category || 'N/A'}</td><td style="padding:10px; border-bottom:1px solid #ddd;">${item.details}</td><td style="padding:10px; border-bottom:1px solid #ddd; text-align:right; font-weight:bold;">Rs ${(item.displayAmount||0).toLocaleString()}</td></tr>`; });
