@@ -120,7 +120,7 @@
 
     <div id="toast" class="toast">Saved Successfully!</div>
 
-    <!-- Sidebar Menu Overlay & Drawer -->
+    <!-- Sidebar Menu -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header"><h2>MENU</h2></div>
@@ -215,10 +215,11 @@
 
             <div class="form-card" style="border-color:var(--red);">
                 <h3 style="margin-bottom:15px; color:var(--red);">Fix / Adjust Balances</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below. The app will calculate the difference and fix the math immediately.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below to forcefully correct the app's math without affecting profit/loss history.</p>
                 <div class="form-group"><label>Exact Till Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjTillAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button></div></div>
                 <div class="form-group"><label>Exact Hand Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjHandAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button></div></div>
                 <div class="form-group"><label>Exact Bank / Online</label><div style="display:flex; gap:10px;"><input type="number" id="adjBankAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button></div></div>
+                <div class="form-group"><label>Exact Salary Vault</label><div style="display:flex; gap:10px;"><input type="number" id="adjVaultAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Vault')">Set</button></div></div>
             </div>
         </section>
 
@@ -325,7 +326,7 @@
                 <div class="form-group"><label>Confirm Bank/Online Balance (Rs)</label><input type="number" id="shiftBankConfirm" inputmode="decimal"></div>
                 <div class="form-group"><label>Total Card Sales on POS (Rs)</label><input type="number" id="shiftCardConfirm" inputmode="decimal"></div>
 
-                <button class="btn-submit" style="background:var(--blue); color:white;" onclick="processShiftEnd()">Close Shift & Save</button>
+                <button class="btn-submit" style="background:var(--blue); color:white;" onclick="processShiftEnd()">Close Shift & Save Backup</button>
             </div>
         </section>
 
@@ -389,11 +390,10 @@
 
         <!-- 8. EXPORT & IMPORT VIEW -->
         <section id="view-export" class="view-section">
-            
             <!-- CSV IMPORT SECTION -->
             <div class="form-card" style="border-color:var(--green);">
                 <h3 style="color:var(--green); margin-bottom:10px;">Restore Data from CSV</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Select the backup CSV file you downloaded earlier to instantly restore all your transactions.</p>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Select your downloaded CSV file to permanently restore your lifetime data.</p>
                 <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="importCSV(event)">
                 <button class="btn-submit" style="background:var(--surface-subtle); color:var(--green); border:1px solid var(--green);" onclick="document.getElementById('csvFileInput').click()">⬆️ Select Backup CSV File</button>
             </div>
@@ -508,7 +508,6 @@
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
-        // Initial Render immediately to prevent blank screens
         refreshAll();
 
         // ==========================================
@@ -535,7 +534,6 @@
             db.ref('salaryPayouts').on('value', (s) => { if(s.exists()) { salaryPayouts = Object.values(s.val()); localStorage.setItem('stackd_payouts', JSON.stringify(salaryPayouts)); refreshAll(); } });
             db.ref('transfers').on('value', (s) => { if(s.exists()) { transfers = Object.values(s.val()); localStorage.setItem('stackd_transfers', JSON.stringify(transfers)); refreshAll(); } });
             
-            // Mark as live
             db.ref('.info/connected').on('value', function(snap) {
                 const pill = document.getElementById('headerProfitPill');
                 if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
@@ -569,7 +567,6 @@
                 if (p.paymentMethod === 'Bank') bank -= p.amount; else if (p.paymentMethod === 'Hand') hand -= p.amount; else till -= p.amount;
             });
             
-            // Transfers array MUST be sorted by ID to apply chronologically
             const sortedT = [...transfers].sort((a, b) => a.id.localeCompare(b.id));
             sortedT.forEach(t => {
                 if(t.direction === 'TillToHand') { till -= t.amount; hand += t.amount; } if(t.direction === 'TillToBank') { till -= t.amount; bank += t.amount; }
@@ -612,7 +609,6 @@
             else if (period === 'week') { const d = new Date(today); d.setDate(d.getDate() - 7); filtered = sales.filter(s => s.date >= d.toISOString().split('T')[0]); } 
             else if (period === 'month') { filtered = sales.filter(s => s.date.startsWith(today.substring(0, 7))); }
             
-            // Sort by descending ID (newest first)
             filtered.sort((a,b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             document.getElementById('salesFilterTotal').textContent = `Rs ${filtered.reduce((a,b) => a+b.total, 0).toLocaleString()}`;
             
@@ -628,7 +624,6 @@
             const feed = document.getElementById('activityFeed'); feed.innerHTML = '';
             let combined = [...sales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...expenses.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
             
-            // Sort by descending ID (newest first)
             combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             if (currentFilter !== 'All') { if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale); else combined = combined.filter(i => !i.isSale && i.category === currentFilter); }
             const grouped = {}; combined.forEach(item => { if(!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
@@ -660,7 +655,7 @@
             if(taken > 0) {
                 const dest = document.getElementById('denomDest').value;
                 const t = { id: generateID(), date: getBusinessDate(), direction: dest === 'Bank' ? 'TillToBank' : 'TillToHand', amount: taken };
-                if(db) dbTransfers.child(t.id).set(t); else transfers.push(t);
+                if(db) dbTransfers.child(t.id).set(t); else { transfers.push(t); refreshAll(); }
             }
             
             const bankConf = document.getElementById('shiftBankConfirm').value;
@@ -727,7 +722,7 @@
         }
 
         // ==========================================
-        // 7. FORMS & CSV IMPORT
+        // 7. FORMS & CSV IMPORT TOOL
         // ==========================================
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active')); document.getElementById(`view-${tabId}`).classList.add('active');
@@ -784,26 +779,37 @@
             showToast("Saved!"); closeModal('editModal');
         }
 
+        // CSV PARSER
         function importCSV(event) {
             const file = event.target.files[0]; if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const lines = e.target.result.split('\n'); let isTxSection = false;
-                showToast("Restoring Data to Cloud...");
+                showToast("Restoring Data...");
                 for(let line of lines) {
                     if(line.includes("DETAILED TRANSACTIONS")) { isTxSection = true; continue; }
                     if(isTxSection) {
                         if(line.includes("Date,Type,Category")) continue; if(line.trim() === '') continue; 
-                        const match = line.match(/(?<=^|,)(?:"([^"]*)"|([^,]*))/g); if(!match || match.length < 6) continue;
                         
-                        const d = (match[0]||'').replace(/"/g, '').trim(); const t = (match[1]||'').replace(/"/g, '').trim(); const c = (match[2]||'').replace(/"/g, '').trim(); const pm = (match[3]||'').replace(/"/g, '').trim(); const desc = (match[4]||'').replace(/"/g, '').trim(); const amt = parseFloat((match[5]||'').replace(/"/g, '').trim());
+                        // Parse CSV line properly ignoring commas inside quotes
+                        let parts = []; let inQuotes = false; let currentPart = '';
+                        for(let i=0; i<line.length; i++){
+                            const char = line[i];
+                            if(char === '"') inQuotes = !inQuotes;
+                            else if(char === ',' && !inQuotes) { parts.push(currentPart.trim()); currentPart = ''; }
+                            else currentPart += char;
+                        }
+                        parts.push(currentPart.trim());
+                        if(parts.length < 5) continue;
+                        
+                        const d = parts[0]||''; const t = parts[1]||''; const c = parts[2]||''; const pm = parts[3]||'Till'; const desc = parts[4]||''; const amt = parseFloat(parts[5]||'0');
                         if(isNaN(amt)) continue;
 
-                        if(t === 'Sale') { const s = { id: generateID(), date: d, type: 'Sale', category: c, details: desc, total: amt }; if(db) dbSales.child(s.id).set(s); } 
-                        else if(t === 'Expense') { const ex = { id: generateID(), date: d, type: 'Expense', category: c, paymentMethod: pm, details: desc, amount: amt }; if(db) dbExpenses.child(ex.id).set(ex); }
+                        if(t === 'Sale') { const s = { id: generateID(), date: d, type: 'Sale', category: c, details: desc, total: amt }; if(db) dbSales.child(s.id).set(s); else sales.push(s); } 
+                        else if(t === 'Expense') { const ex = { id: generateID(), date: d, type: 'Expense', category: c, paymentMethod: pm, details: desc, amount: amt }; if(db) dbExpenses.child(ex.id).set(ex); else expenses.push(ex); }
                     }
                 }
-                setTimeout(() => location.reload(), 1500);
+                setTimeout(() => { if(!db) refreshAll(); showToast("Restore Complete!"); }, 1000);
             };
             reader.readAsText(file);
         }
