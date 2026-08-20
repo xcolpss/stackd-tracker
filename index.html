@@ -487,16 +487,15 @@
         // ==========================================
         // 🚨 IMPORTANT: FIREBASE CONFIGURATION
         // ==========================================
-        // Without this, the app will crash and throw reference errors. 
-        // Replace these placeholder values with your actual STACKD Firebase web credentials!
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            databaseURL: "YOUR_DATABASE_URL",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyAgsaNY5gBjUhLzK_24Hzs9Xzj_DLfRDv4",
+            authDomain: "stackd-2d64b.firebaseapp.com",
+            databaseURL: "https://stackd-2d64b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "stackd-2d64b",
+            storageBucket: "stackd-2d64b.firebasestorage.app",
+            messagingSenderId: "798632697218",
+            appId: "1:798632697218:web:97fd996539e977e2bf839b",
+            measurementId: "G-BHR1WV8YD4"
         };
 
         // GLOBAL VARIABLES & UTILS
@@ -547,7 +546,7 @@
             } catch(e) {}
 
             try {
-                // This is where it was crashing because firebaseConfig wasn't defined
+                // Initialize Firebase
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
                 
@@ -564,7 +563,7 @@
                         rawSalesData.forEach(s => dbSales.child(s.id).set(s));
                         rawExpensesData.forEach(e => dbExpenses.child(e.id).set(e));
                         
-                        // Force the EXACT Balances via adjustment transfers as you requested
+                        // Force the EXACT Balances via adjustment transfers as requested
                         const adjs = [
                             { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Till', amount: 4120 },
                             { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Hand', amount: 24000 },
@@ -589,8 +588,8 @@
                     }
                 });
             } catch (e) { 
-                console.error("Firebase Initialization Failed (Did you add your config?)", e); 
-                document.getElementById('headerProfitPill').textContent = "Add Firebase Config"; 
+                console.error("Firebase Error", e); 
+                document.getElementById('headerProfitPill').textContent = "Connection Error"; 
                 document.getElementById('headerProfitPill').className = "net-pill negative";
             }
         });
