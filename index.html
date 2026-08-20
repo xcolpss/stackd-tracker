@@ -37,13 +37,13 @@
         header { position: sticky; top: 0; z-index: 50; background: rgba(13, 13, 15, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-size: 1.25rem; font-weight: 900; letter-spacing: 2px; color: var(--yellow); display: flex; align-items: center; gap: 10px; }
         .menu-btn { background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); }
+        .net-pill { font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); transition: 0.3s; }
         .positive { color: var(--green); } .negative { color: var(--red); }
 
         /* Sidebar Menu */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; pointer-events: none; transition: 0.3s; }
         .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
-        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar { position: fixed; top: 0; bottom: 0; left: -280px; width: 260px; background: var(--surface); z-index: 100; transition: left 0.3s ease; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 0; overflow-y: auto; }
         .sidebar.active { left: 0; }
         .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .sidebar-header h2 { color: var(--yellow); letter-spacing: 1px; font-weight: 900; }
@@ -63,6 +63,8 @@
         .stat-box .sub-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; }
         .stat-box .sub-value { font-size: 1.1rem; font-weight: 700; }
         .section-title { font-size: 0.95rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 20px 4px 12px; }
+
+        .date-header { background: var(--surface-subtle); color: var(--yellow); padding: 6px 12px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; border-radius: 6px; margin: 15px 0 8px 0; display: block; border: 1px solid var(--border); text-align: center; letter-spacing: 1px;}
 
         /* Lists & Transactions */
         .category-list, .feed-list { display: flex; flex-direction: column; gap: 8px; }
@@ -99,13 +101,24 @@
         .btn-submit:active { transform: scale(0.98); }
         .btn-quick-salary { width: 100%; background: transparent; border: 1px dashed var(--purple); color: var(--purple); border-radius: var(--radius-sm); padding: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 12px; }
 
+        .progress-wrapper { margin-bottom: 15px; }
+        .progress-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--text); }
+        .progress-bar-bg { width: 100%; height: 12px; background: var(--surface-subtle); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+        .progress-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.3s ease; }
+        .progress-fill.full { background: var(--green); }
+
+        .denom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .denom-row { display: flex; align-items: center; gap: 10px; background: var(--surface-subtle); padding: 5px 10px; border-radius: 8px; }
+        .denom-row span { font-weight: bold; width: 40px; color: var(--yellow); }
+        .denom-row input { padding: 8px; margin: 0; text-align: center; }
+
         /* Export & Vault specific */
         .export-btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .btn-pdf { flex: 1; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-csv { flex: 1; background: #2ecc71; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 15px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
+        .vault-pill { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--purple); text-align: center; margin-bottom: 20px; }
         .vault-pill h3 { font-size: 0.85rem; text-transform: uppercase; margin-bottom: 5px; }
-        .vault-pill h1 { font-size: 2.2rem; margin: 0; }
+        .vault-pill h1 { font-size: 2.5rem; margin: 0; }
 
         /* Bottom Nav */
         nav.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(23, 23, 28, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 10px 10px max(10px, env(safe-area-inset-bottom)); z-index: 40; }
@@ -118,7 +131,7 @@
         /* Modals & Toasts */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px); z-index: 200; align-items: flex-end; justify-content: center; }
         .modal.open { display: flex; }
-        .modal-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; padding: 20px 20px max(24px, env(safe-area-inset-bottom)); }
+        .modal-sheet { background: var(--surface); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; padding: 20px 20px max(24px, env(safe-area-inset-bottom)); max-height: 90vh; overflow-y:auto;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; }
         
@@ -139,11 +152,11 @@
         <div class="sidebar-header"><h2>MENU</h2></div>
         <a class="menu-link" onclick="switchTab('dashboard'); toggleMenu();">📊 Dashboard</a>
         <a class="menu-link" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active').click(); toggleMenu();">📈 Dedicated Sales Log</a>
-        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions</a>
-        <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Daily Shift Report</a>
+        <a class="menu-link" onclick="switchTab('activity'); toggleMenu();">📄 All Transactions Feed</a>
+        <a class="menu-link" onclick="switchTab('daily-report'); toggleMenu();">📅 Shift & Cash Closer</a>
         <a class="menu-link" onclick="switchTab('balances'); toggleMenu();">🏦 Accounts & Transfers</a>
         <a class="menu-link" onclick="switchTab('salary-vault'); toggleMenu();">💰 Salary Vault</a>
-        <a class="menu-link" onclick="switchTab('export'); toggleMenu();">⬇️ Export to Excel/PDF</a>
+        <a class="menu-link" onclick="switchTab('export'); toggleMenu();">⬇️ Export / Backup</a>
     </div>
 
     <header>
@@ -160,26 +173,30 @@
         <!-- 1. DASHBOARD VIEW -->
         <section id="view-dashboard" class="view-section active">
             <div class="hero-card">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:15px;">
-                    <div>
-                        <div class="sub-label">CASH IN HAND/TILL</div>
-                        <div class="main-stat" style="color:var(--green); font-size:1.6rem;" id="dashCash">Rs 0</div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:15px; text-align:center;">
+                    <div style="flex:1; border-right:1px solid var(--border);">
+                        <div class="sub-label">CASH IN TILL</div>
+                        <div class="main-stat" style="color:var(--green); font-size:1.3rem; margin-bottom:0;" id="dashTill">Rs 0</div>
                     </div>
-                    <div style="text-align:right;">
+                    <div style="flex:1; border-right:1px solid var(--border);">
+                        <div class="sub-label">CASH IN HAND</div>
+                        <div class="main-stat" style="color:var(--green); font-size:1.3rem; margin-bottom:0;" id="dashHand">Rs 0</div>
+                    </div>
+                    <div style="flex:1;">
                         <div class="sub-label">BANK / ONLINE</div>
-                        <div class="main-stat" style="color:var(--blue); font-size:1.6rem;" id="dashBank">Rs 0</div>
+                        <div class="main-stat" style="color:var(--blue); font-size:1.3rem; margin-bottom:0;" id="dashBank">Rs 0</div>
                     </div>
                 </div>
                 <div class="stats-split" style="padding-top:0; border:none;">
                     <div class="stat-box"><div class="sub-label">Lifetime Sales</div><div class="sub-value" id="dashTotalSales">Rs 0</div></div>
-                    <div class="stat-box"><div class="sub-label">Net Profit / P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
+                    <div class="stat-box" style="text-align:right;"><div class="sub-label">Net P&L</div><div class="sub-value" id="dashNetProfit">Rs 0</div></div>
                 </div>
             </div>
             <div class="section-title">Where Your Money Goes</div>
             <div class="category-list" id="categoryBreakdownList"></div>
         </section>
 
-        <!-- 2. SALES LEDGER VIEW (NEW) -->
+        <!-- 2. SALES LEDGER VIEW -->
         <section id="view-sales" class="view-section">
             <div class="form-card" style="padding:15px;">
                 <h3 style="color:var(--yellow); margin-bottom:15px; text-transform:uppercase;">Sales Log</h3>
@@ -201,13 +218,14 @@
             </div>
         </section>
 
-        <!-- 3. BALANCES & TRANSFERS VIEW (NEW) -->
+        <!-- 3. BALANCES & TRANSFERS -->
         <section id="view-balances" class="view-section">
             <div class="hero-card" style="text-align:center;">
                 <h3 style="color:var(--yellow); margin-bottom:20px; text-transform:uppercase;">Current Accounts</h3>
                 <div class="stats-split" style="border:none; padding:0;">
-                    <div><div class="sub-label">CASH IN HAND/TILL</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balCash">Rs 0</div></div>
-                    <div><div class="sub-label">BANK / ONLINE</div><div class="sub-value" style="color:var(--blue); font-size:1.5rem;" id="balBank">Rs 0</div></div>
+                    <div><div class="sub-label">TILL CASH</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balTill">Rs 0</div></div>
+                    <div><div class="sub-label">HAND CASH</div><div class="sub-value" style="color:var(--green); font-size:1.5rem;" id="balHand">Rs 0</div></div>
+                    <div><div class="sub-label">BANK ONLINE</div><div class="sub-value" style="color:var(--blue); font-size:1.5rem;" id="balBank">Rs 0</div></div>
                 </div>
             </div>
 
@@ -215,10 +233,13 @@
                 <h3 style="margin-bottom:15px; color:var(--yellow);">Transfer Money</h3>
                 <form onsubmit="handleTransfer(event)">
                     <div class="form-group">
-                        <label>Direction</label>
+                        <label>Transfer Type</label>
                         <select id="transferDir" required>
-                            <option value="CashToBank">Cash ➡️ Bank (Deposit)</option>
-                            <option value="BankToCash">Bank ➡️ Cash (Withdrawal)</option>
+                            <option value="TillToHand">Till ➡️ Hand</option>
+                            <option value="TillToBank">Till ➡️ Bank/Online</option>
+                            <option value="HandToBank">Hand ➡️ Bank/Online</option>
+                            <option value="BankToHand">Bank/Online ➡️ Hand (Withdrawal)</option>
+                            <option value="BankToTill">Bank/Online ➡️ Till</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Amount (Rs)</label><input type="number" id="transferAmt" required min="1" inputmode="decimal"></div>
@@ -228,22 +249,11 @@
 
             <div class="form-card" style="border-color:var(--red);">
                 <h3 style="margin-bottom:15px; color:var(--red);">Fix / Adjust Balances</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">If the app's math is off due to unrecorded transactions, enter your exact actual balance below to correct it. This doesn't mess up your profit/loss records.</p>
-                
-                <div class="form-group">
-                    <label>Set Exact Bank Balance (Rs)</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="adjBankAmt" inputmode="decimal" placeholder="e.g. 8199">
-                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Set Exact Cash Balance (Rs)</label>
-                    <div style="display:flex; gap:10px;">
-                        <input type="number" id="adjCashAmt" inputmode="decimal" placeholder="Actual Cash">
-                        <button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Cash')">Set</button>
-                    </div>
-                </div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Set your exact actual balances below to forcefully correct the app's math without affecting profit/loss history.</p>
+                <div class="form-group"><label>Exact Till Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjTillAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Till')">Set</button></div></div>
+                <div class="form-group"><label>Exact Hand Cash</label><div style="display:flex; gap:10px;"><input type="number" id="adjHandAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Hand')">Set</button></div></div>
+                <div class="form-group"><label>Exact Bank / Online</label><div style="display:flex; gap:10px;"><input type="number" id="adjBankAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Bank')">Set</button></div></div>
+                <div class="form-group"><label>Exact Salary Vault</label><div style="display:flex; gap:10px;"><input type="number" id="adjVaultAmt" inputmode="decimal"><button class="btn-submit" style="margin-top:0; width:auto; padding:0 20px; background:var(--red); color:white;" onclick="adjustHolding('Vault')">Set</button></div></div>
             </div>
         </section>
 
@@ -272,19 +282,19 @@
             </div>
             <div class="form-card">
                 <form id="saleForm" style="display: none;" onsubmit="handleSaleSubmit(event)">
-                    <div class="form-group"><label>Business Date (Auto Shift)</label><input type="date" id="addSaleDate" required></div>
-                    <div class="form-group"><label>Cash (Rs)</label><input type="number" id="addSaleCash" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Card (Rs)</label><input type="number" id="addSaleCard" placeholder="0" inputmode="decimal"></div>
-                    <div class="form-group"><label>Online (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Shift Date</label><input type="date" id="addSaleDate" required></div>
+                    <div class="form-group"><label>Cash to Till (Rs)</label><input type="number" id="addSaleTill" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Cash to Hand (Rs)</label><input type="number" id="addSaleHand" placeholder="0" inputmode="decimal"></div>
+                    <div class="form-group"><label>Online/Bank (Rs)</label><input type="number" id="addSaleOnline" placeholder="0" inputmode="decimal"></div>
                     <button type="submit" class="btn-submit">Log Sale</button>
                 </form>
                 <form id="expenseForm" onsubmit="handleExpenseSubmit(event)">
-                    <div class="form-group"><label>Business Date (Auto Shift)</label><input type="date" id="addExpDate" required></div>
+                    <div class="form-group"><label>Shift Date</label><input type="date" id="addExpDate" required></div>
                     <div class="form-group">
                         <label>Category</label>
                         <select id="addExpCat" required>
                             <option value="Food & Ingredients">Food & Ingredients</option>
-                            <option value="Salaries & Wages">Salaries & Wages (Add to Vault)</option>
+                            <option value="Salaries & Wages">Salaries & Wages (Adds to Vault)</option>
                             <option value="Staff Expenses">Staff Expenses</option>
                             <option value="Owner Expenses">Owner Expenses</option>
                             <option value="Packaging">Packaging</option>
@@ -295,11 +305,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Paid Via</label>
+                        <label>Paid From</label>
                         <select id="addExpMethod" required>
-                            <option value="Cash">Cash (Drawer / Hand)</option>
-                            <option value="Online">Online Transfer (Bank)</option>
-                            <option value="Card">Bank Card (Bank)</option>
+                            <option value="Till">Cash (From Till)</option>
+                            <option value="Hand">Cash (From Hand)</option>
+                            <option value="Bank">Online / Bank Account</option>
+                            <option value="Card">Bank Card</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Description</label><input type="text" id="addExpItem" required></div>
@@ -310,45 +321,99 @@
             </div>
         </section>
 
-        <!-- 6. DAILY SHIFT REPORT -->
+        <!-- 6. SHIFT END CLOSER -->
         <section id="view-daily-report" class="view-section">
-            <div class="form-card">
-                <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Daily Shift Report</h3>
+            <div class="form-card" style="border-color:var(--yellow);">
+                <h3 style="color:var(--yellow); margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Shift End & Till Calculator</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Count the notes in the Till at the end of the shift.</p>
+                
+                <div class="denom-grid">
+                    <div class="denom-row"><span>5000</span><input type="number" id="n5000" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>1000</span><input type="number" id="n1000" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>500</span><input type="number" id="n500" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>100</span><input type="number" id="n100" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>50</span><input type="number" id="n50" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>20</span><input type="number" id="n20" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                    <div class="denom-row"><span>10</span><input type="number" id="n10" inputmode="numeric" placeholder="Qty" onkeyup="calcDenom()"></div>
+                </div>
+                
+                <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin:15px 0; text-align:center;">
+                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Total Counted in Till</div>
+                    <div style="font-size:2rem; font-weight:800; color:var(--green);" id="denomTotal">Rs 0</div>
+                </div>
+
+                <div class="form-group"><label>Take amount OUT of Till (Rs)</label><input type="number" id="denomTaken" inputmode="decimal" placeholder="0" onkeyup="calcDenom()"></div>
                 <div class="form-group">
-                    <label>Select Shift Date</label>
-                    <input type="date" id="dailyReportDate" onchange="generateDailyReport()">
+                    <label>Where is this money going?</label>
+                    <select id="denomDest">
+                        <option value="Hand">Move to Cash in Hand</option>
+                        <option value="Bank">Deposit to Bank</option>
+                    </select>
                 </div>
                 
-                <div class="stats-split" style="margin-top:20px; border-top:none;">
-                    <div class="stat-box"><div class="sub-label">Sales Today</div><div class="sub-value positive" id="drSales">Rs 0</div></div>
-                    <div class="stat-box"><div class="sub-label">Expenses Today</div><div class="sub-value negative" id="drExpenses">Rs 0</div></div>
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid var(--border); margin-top:10px;">
+                    <span style="font-weight:bold; color:var(--text-muted);">Amount Left in Till:</span>
+                    <span style="font-weight:bold; color:var(--yellow); font-size:1.2rem;" id="denomLeft">Rs 0</span>
                 </div>
-                
-                <div style="background:var(--surface-subtle); padding:15px; border-radius:10px; margin-top:20px; text-align:center; border: 1px solid var(--border);">
-                    <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; margin-bottom:5px;">Remaining Cash Drawer Balance</div>
-                    <div style="font-size:2rem; font-weight:800; color:var(--yellow);" id="drCashDrawer">Rs 0</div>
-                    <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">(Today's Cash Sales) - (Today's Cash Expenses)</div>
-                </div>
-                
-                <div class="section-title" style="margin-left:0;">Detailed Log</div>
-                <div class="feed-list" id="drFeedList"></div>
+
+                <h4 style="margin:20px 0 10px; color:var(--text-muted);">Verify Final Totals</h4>
+                <div class="form-group"><label>Confirm Bank/Online Balance (Rs)</label><input type="number" id="shiftBankConfirm" inputmode="decimal"></div>
+                <div class="form-group"><label>Total Card Sales on POS (Rs)</label><input type="number" id="shiftCardConfirm" inputmode="decimal"></div>
+
+                <button class="btn-submit" style="background:var(--blue); color:white;" onclick="processShiftEnd()">Close Shift & Save Backup</button>
             </div>
         </section>
 
         <!-- 7. SALARY VAULT -->
         <section id="view-salary-vault" class="view-section">
             <div class="vault-pill">
-                <h3>Total Salary Reserve Available</h3>
+                <h3>Total Salary Reserve (The Vault)</h3>
                 <h1 id="vaultBalance">Rs 0</h1>
             </div>
 
             <div class="form-card">
-                <h3 style="color:var(--yellow); margin-bottom:15px;">Log Salary Payout / Withdrawal</h3>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:15px;">Use this when you are actually paying staff at the end of the month, or withdrawing from the salary pool for an emergency. This removes money from the Vault.</p>
+                <h3 style="color:var(--yellow); margin-bottom:15px;">Fund The Vault</h3>
+                <form onsubmit="handleFundVault(event)">
+                    <div class="form-group"><label>Amount (Rs)</label><input type="number" id="vaultFundAmt" inputmode="decimal" value="4000" required></div>
+                    <div class="form-group">
+                        <label>Take Money From</label>
+                        <select id="vaultFundSource" required>
+                            <option value="Bank">Bank / Online Account</option>
+                            <option value="Hand">Cash in Hand</option>
+                            <option value="Till">Cash in Till</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit" style="background:var(--green); color:#000;">+ Move Money to Vault</button>
+                </form>
+            </div>
+
+            <div class="form-card" id="employeeProgressBars">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="form-card">
+                <h3 style="color:var(--red); margin-bottom:15px;">Log Salary Payout (Withdrawal)</h3>
                 <form onsubmit="handlePayoutSubmit(event)">
                     <div class="form-group"><label>Date</label><input type="date" id="payoutDate" required></div>
-                    <div class="form-group"><label>Who/What is this payout for?</label><input type="text" id="payoutDesc" placeholder="e.g. Ali's Month Salary" required></div>
-                    <div class="form-group"><label>Amount Withdrawn (Rs)</label><input type="number" id="payoutAmount" inputmode="decimal" required min="1"></div>
+                    <div class="form-group">
+                        <label>Employee</label>
+                        <select id="payoutEmployee" required>
+                            <option value="Ahmed">Ahmed (20k)</option>
+                            <option value="Amroz">Amroz (25k)</option>
+                            <option value="Kainat">Kainat (20k)</option>
+                            <option value="Muqadas">Muqadas (20k)</option>
+                            <option value="Other">Other / Emergency</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Money Physically Paid From</label>
+                        <select id="payoutMethod" required>
+                            <option value="Bank">Bank / JazzCash</option>
+                            <option value="Hand">Cash in Hand</option>
+                            <option value="Till">Cash in Till</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Amount Paid (Rs)</label><input type="number" id="payoutAmount" inputmode="decimal" required min="1"></div>
                     <button type="submit" class="btn-submit" style="background:var(--purple); color:white;">Process Payout</button>
                 </form>
             </div>
@@ -387,7 +452,7 @@
         <button class="nav-item active" onclick="switchTab('dashboard')"><span class="nav-icon">📊</span><span>Dash</span></button>
         <button class="nav-item" onclick="switchTab('sales'); document.querySelector('#salesFilters .chip.active').click();"><span class="nav-icon">📈</span><span>Sales</span></button>
         <button class="nav-add-btn" onclick="switchTab('add')">+</button>
-        <button class="nav-item" onclick="switchTab('daily-report')"><span class="nav-icon">📅</span><span>Daily</span></button>
+        <button class="nav-item" onclick="switchTab('daily-report')"><span class="nav-icon">📅</span><span>Shift</span></button>
         <button class="nav-item" onclick="switchTab('activity')"><span class="nav-icon">📄</span><span>Feed</span></button>
     </nav>
 
@@ -414,7 +479,8 @@
             <div class="form-group" id="editMethodGroup" style="display:none;">
                 <label>Paid Via</label>
                 <select id="editExpMethod">
-                    <option value="Cash">Cash</option>
+                    <option value="Till">Cash (Till)</option>
+                    <option value="Hand">Cash (Hand)</option>
                     <option value="Online">Online / Bank Transfer</option>
                     <option value="Card">Bank Card</option>
                 </select>
@@ -441,7 +507,7 @@
 
     <script>
         // ==========================================
-        // 1. FIREBASE SETUP
+        // 1. FIREBASE SETUP & VARIABLES
         // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAgsaNY5g8jUhLzK_24Hzs9XzJ_DLfRDv4",
@@ -450,8 +516,7 @@
             projectId: "stackd-2d64b",
             storageBucket: "stackd-2d64b.firebasestorage.app",
             messagingSenderId: "798632697218",
-            appId: "1:798632697218:web:97fd996539e977e2bf839b",
-            measurementId: "G-8HR1WVBYD4"
+            appId: "1:798632697218:web:97fd996539e977e2bf839b"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -462,9 +527,12 @@
         let salaryPayouts = [];
         let transfers = [];
         let currentFilter = 'All';
-        const generateID = () => '_' + Math.random().toString(36).substr(2, 9);
+        
+        const salaryTargets = { Ahmed: 20000, Kainat: 20000, Muqadas: 20000, Amroz: 25000 };
+        const TOTAL_SALARY_GOAL = 85000;
 
-        // Calculate business shift date (2 PM to 4 AM shift logic)
+        const generateID = () => Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5);
+
         function getBusinessDate() {
             const now = new Date();
             if (now.getHours() < 4) now.setDate(now.getDate() - 1);
@@ -473,416 +541,316 @@
             return localNow.toISOString().split('T')[0];
         }
 
-        // Setup Dates
         document.getElementById('addSaleDate').value = getBusinessDate();
         document.getElementById('addExpDate').value = getBusinessDate();
         document.getElementById('dailyReportDate').value = getBusinessDate();
         document.getElementById('payoutDate').value = getBusinessDate();
 
-        // Menu & UI Toggles
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
         // ==========================================
-        // 2. CLOUD SYNCING
+        // 2. CLOUD SYNCING & BALANCES
         // ==========================================
-        const dbSales = db.ref('sales');
-        const dbExpenses = db.ref('expenses');
-        const dbPayouts = db.ref('salaryPayouts');
-        const dbTransfers = db.ref('transfers');
+        // USING THE ORIGINAL WORKING FOLDER "stackdData"
+        db.ref('stackdData').on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            sales = data.sales ? Object.values(data.sales) : [];
+            expenses = data.expenses ? Object.values(data.expenses) : [];
+            salaryPayouts = data.salaryPayouts ? Object.values(data.salaryPayouts) : [];
+            transfers = data.transfers ? Object.values(data.transfers) : [];
+            refreshAll();
+        });
 
-        dbSales.on('value', (s) => { sales = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbExpenses.on('value', (s) => { expenses = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbPayouts.on('value', (s) => { salaryPayouts = s.val() ? Object.values(s.val()) : []; refreshAll(); });
-        dbTransfers.on('value', (s) => { transfers = s.val() ? Object.values(s.val()) : []; refreshAll(); });
+        db.ref('.info/connected').on('value', function(snap) {
+            const pill = document.getElementById('headerProfitPill');
+            if (snap.val() === true) { pill.textContent = "Live / Synced"; pill.className = "net-pill positive"; } 
+            else { pill.textContent = "Offline Mode"; pill.className = "net-pill negative"; }
+        });
+
+        function syncToCloud() {
+            let sObj = {}; sales.forEach(s => sObj[s.id] = s);
+            let eObj = {}; expenses.forEach(e => eObj[e.id] = e);
+            let pObj = {}; salaryPayouts.forEach(p => pObj[p.id] = p);
+            let tObj = {}; transfers.forEach(t => tObj[t.id] = t);
+            db.ref('stackdData').set({ sales: sObj, expenses: eObj, salaryPayouts: pObj, transfers: tObj });
+        }
 
         function refreshAll() {
-            renderDashboard();
-            renderCategoryBreakdown();
-            renderFeed();
-            generateDailyReport();
-            renderSalaryVault();
+            renderDashboard(); renderCategoryBreakdown(); renderGroupedFeed(); renderSalaryVault();
             const activeSalesFilter = document.querySelector('#salesFilters .chip.active');
             if(activeSalesFilter) activeSalesFilter.click();
         }
 
         function getBalances() {
-            let c = 0; let b = 0;
+            let till = 0; let hand = 0; let bank = 0; let vault = 0;
+            
             sales.forEach(s => {
-                const cMatch = s.details.match(/Cash:\s*(\d+(\.\d+)?)/);
-                const caMatch = s.details.match(/Card:\s*(\d+(\.\d+)?)/);
-                const oMatch = s.details.match(/Online:\s*(\d+(\.\d+)?)/);
-                if (s.details === "Imported Data") { c += s.total; } 
-                else { c += cMatch ? parseFloat(cMatch[1]) : 0; b += caMatch ? parseFloat(caMatch[1]) : 0; b += oMatch ? parseFloat(oMatch[1]) : 0; }
-            });
-            expenses.forEach(e => {
-                if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { b -= e.amount; } 
-                else { c -= e.amount; }
-            });
-            transfers.forEach(t => {
-                if(t.direction === 'CashToBank') { c -= t.amount; b += t.amount; }
-                else if(t.direction === 'BankToCash') { b -= t.amount; c += t.amount; }
-                else if(t.direction === 'Adjustment') {
-                    if(t.account === 'Cash') c += t.amount;
-                    if(t.account === 'Bank') b += t.amount;
+                const details = s.details || "";
+                const tMatch = details.match(/Till:\s*(\d+(\.\d+)?)/); 
+                const hMatch = details.match(/Hand:\s*(\d+(\.\d+)?)/); 
+                const oMatch = details.match(/Online:\s*(\d+(\.\d+)?)/);
+                if(tMatch || hMatch || oMatch) { 
+                    till += tMatch ? parseFloat(tMatch[1]) : 0; 
+                    hand += hMatch ? parseFloat(hMatch[1]) : 0; 
+                    bank += oMatch ? parseFloat(oMatch[1]) : 0; 
+                } 
+                else { 
+                    const oldMatch = details.match(/Cash:\s*(\d+(\.\d+)?)/); 
+                    if(oldMatch) till += parseFloat(oldMatch[1]); 
+                    else if(details === "Imported Data") till += s.total; 
+                    else till += s.total;
                 }
             });
-            return { cash: c, bank: b };
+            expenses.forEach(e => {
+                if(e.category === 'Salaries & Wages') { vault += e.amount; }
+                if (e.paymentMethod === 'Bank' || e.paymentMethod === 'Online' || e.paymentMethod === 'Card') { bank -= e.amount; } 
+                else if (e.paymentMethod === 'Hand') { hand -= e.amount; } 
+                else { till -= e.amount; } 
+            });
+            salaryPayouts.forEach(p => {
+                vault -= p.amount;
+                if (p.paymentMethod === 'Bank') bank -= p.amount; 
+                else if (p.paymentMethod === 'Hand') hand -= p.amount; 
+                else till -= p.amount;
+            });
+            
+            const sortedT = [...transfers].sort((a, b) => a.id.localeCompare(b.id));
+            sortedT.forEach(t => {
+                if(t.direction === 'TillToHand') { till -= t.amount; hand += t.amount; } 
+                if(t.direction === 'TillToBank') { till -= t.amount; bank += t.amount; }
+                if(t.direction === 'HandToBank') { hand -= t.amount; bank += t.amount; } 
+                if(t.direction === 'BankToHand') { bank -= t.amount; hand += t.amount; }
+                if(t.direction === 'BankToTill') { bank -= t.amount; till += t.amount; }
+                if(t.direction === 'Adjustment') { 
+                    if(t.account === 'Till') { till += t.amount; } if(t.account === 'Hand') { hand += t.amount; }
+                    if(t.account === 'Bank') { bank += t.amount; } if(t.account === 'Vault') { vault += t.amount; }
+                }
+            });
+            return { till, hand, bank, vault };
         }
 
         // ==========================================
         // 3. UI RENDERING
         // ==========================================
         function renderDashboard() {
-            const totalS = sales.reduce((sum, s) => sum + s.total, 0);
-            const totalE = expenses.reduce((sum, e) => sum + e.amount, 0);
-            const profit = totalS - totalE;
+            const totalS = sales.reduce((sum, s) => sum + s.total, 0); const totalE = expenses.reduce((sum, e) => sum + e.amount, 0); const profit = totalS - totalE;
             const bals = getBalances();
 
-            document.getElementById('dashCash').textContent = `Rs ${bals.cash.toLocaleString()}`;
-            document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
+            document.getElementById('dashTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('dashHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('dashBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
+            document.getElementById('balTill').textContent = `Rs ${bals.till.toLocaleString()}`; document.getElementById('balHand').textContent = `Rs ${bals.hand.toLocaleString()}`; document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
+            document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`; document.getElementById('dashVault').textContent = `Rs ${bals.vault.toLocaleString()}`;
             
-            document.getElementById('balCash').textContent = `Rs ${bals.cash.toLocaleString()}`;
-            document.getElementById('balBank').textContent = `Rs ${bals.bank.toLocaleString()}`;
-
-            document.getElementById('dashTotalSales').textContent = `Rs ${totalS.toLocaleString()}`;
-            const np = document.getElementById('dashNetProfit');
-            np.textContent = `Rs ${profit.toLocaleString()}`;
-            np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
-
-            const pill = document.getElementById('headerProfitPill');
-            pill.textContent = `Net: Rs ${profit.toLocaleString()}`;
-            pill.className = profit >= 0 ? 'net-pill positive' : 'net-pill negative';
+            const np = document.getElementById('dashNetProfit'); np.textContent = `Rs ${profit.toLocaleString()}`; np.className = profit >= 0 ? 'sub-value positive' : 'sub-value negative';
         }
 
         function renderCategoryBreakdown() {
-            const cats = {};
-            expenses.forEach(e => { cats[e.category || 'Operating Expenses'] = (cats[e.category] || 0) + e.amount; });
-            const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]);
-            const list = document.getElementById('categoryBreakdownList');
-            list.innerHTML = '';
+            const cats = {}; expenses.forEach(e => { cats[e.category || 'Operating Expenses'] = (cats[e.category] || 0) + e.amount; });
+            const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]); const list = document.getElementById('categoryBreakdownList'); list.innerHTML = '';
             const colors = { 'Food & Ingredients': 'var(--yellow)', 'Salaries & Wages': 'var(--green)', 'Owner Expenses': 'var(--red)', 'Staff Expenses': 'var(--blue)', 'Business Reinvestment': 'var(--purple)' };
-
-            sorted.forEach(([cat, amt]) => {
-                list.innerHTML += `<div class="category-row">
-                    <div class="category-meta"><div class="category-indicator" style="background: ${colors[cat] || '#8e8e9a'}"></div><span class="cat-name">${cat}</span></div>
-                    <span class="cat-amount">Rs ${amt.toLocaleString()}</span>
-                </div>`;
-            });
+            sorted.forEach(([cat, amt]) => { list.innerHTML += `<div class="category-row"><div class="category-meta"><div class="category-indicator" style="background: ${colors[cat] || '#8e8e9a'}"></div><span class="cat-name">${cat}</span></div><span class="cat-amount">Rs ${amt.toLocaleString()}</span></div>`; });
         }
 
         function filterSalesView(period, btn) {
-            document.querySelectorAll('#salesFilters .chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
+            document.querySelectorAll('#salesFilters .chip').forEach(c => c.classList.remove('active')); btn.classList.add('active');
+            const today = getBusinessDate(); let filtered = [...sales];
+            if(period === 'today') { filtered = filtered.filter(s => s.date === today); } 
+            else if (period === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); filtered = filtered.filter(s => s.date === y.toISOString().split('T')[0]); } 
+            else if (period === 'week') { const d = new Date(today); d.setDate(d.getDate() - 7); filtered = filtered.filter(s => s.date >= d.toISOString().split('T')[0]); } 
+            else if (period === 'month') { filtered = filtered.filter(s => s.date.startsWith(today.substring(0, 7))); }
             
-            const today = getBusinessDate();
-            let filtered = sales;
+            filtered.sort((a,b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
+            document.getElementById('salesFilterTotal').textContent = `Rs ${filtered.reduce((a,b) => a+b.total, 0).toLocaleString()}`;
             
-            if(period === 'today') { filtered = sales.filter(s => s.date === today); } 
-            else if (period === 'yesterday') {
-                const y = new Date(); y.setDate(y.getDate() - 1); if (new Date().getHours() < 4) y.setDate(y.getDate() - 1);
-                const offset = y.getTimezoneOffset(); const localY = new Date(y.getTime() - (offset*60*1000));
-                filtered = sales.filter(s => s.date === localY.toISOString().split('T')[0]);
-            } 
-            else if (period === 'week') {
-                const d = new Date(); d.setDate(d.getDate() - 7);
-                filtered = sales.filter(s => s.date >= d.toISOString().split('T')[0]);
-            } 
-            else if (period === 'month') {
-                filtered = sales.filter(s => s.date.startsWith(today.substring(0, 7)));
+            const list = document.getElementById('salesOnlyList'); list.innerHTML = '';
+            const grouped = {}; filtered.forEach(s => { if(!grouped[s.date]) grouped[s.date] = []; grouped[s.date].push(s); });
+            for(const date in grouped) {
+                list.innerHTML += `<div class="date-header">${date}</div>`;
+                grouped[date].forEach(s => { list.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">Daily Sale</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details}</div></div><div class="tx-right"><div class="tx-amount positive">Rs ${s.total.toLocaleString()}</div><button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div></div>`; });
             }
-            
-            filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
-            const tot = filtered.reduce((a,b) => a+b.total, 0);
-            document.getElementById('salesFilterTotal').textContent = `Rs ${tot.toLocaleString()}`;
-            
-            const list = document.getElementById('salesOnlyList');
-            list.innerHTML = '';
-            filtered.forEach(s => {
-                list.innerHTML += `<div class="tx-card">
-                    <div class="tx-left"><div class="tx-title">${s.date}</div><div class="tx-sub" style="color:var(--text-muted); font-size:0.75rem;">${s.details}</div></div>
-                    <div class="tx-right"><div class="tx-amount positive">Rs ${s.total.toLocaleString()}</div>
-                    <button class="btn-icon" onclick="openEditModal('${s.id}', 'Sale')">Edit</button></div>
-                </div>`;
-            });
         }
 
-        function renderFeed() {
-            const feed = document.getElementById('activityFeed');
-            feed.innerHTML = '';
+        function renderGroupedFeed() {
+            const feed = document.getElementById('activityFeed'); feed.innerHTML = '';
             let combined = [...sales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...expenses.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
-            combined.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            if (currentFilter !== 'All') {
-                if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale);
-                else combined = combined.filter(i => !i.isSale && i.category === currentFilter);
+            combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
+            
+            if (currentFilter !== 'All') { if (currentFilter === 'Sale') combined = combined.filter(i => i.isSale); else combined = combined.filter(i => !i.isSale && i.category === currentFilter); }
+            const grouped = {}; combined.forEach(item => { if(!grouped[item.date]) grouped[item.date] = []; grouped[item.date].push(item); });
+            for(const date in grouped) {
+                feed.innerHTML += `<div class="date-header">${date}</div>`;
+                grouped[date].forEach(item => {
+                    const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Till');
+                    feed.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-sub"><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div></div><div class="tx-right"><div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${item.displayAmount.toLocaleString()}</div><div class="tx-actions"><button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button><button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button></div></div></div>`;
+                });
             }
-
-            combined.forEach(item => {
-                const meth = item.isSale ? '' : (item.paymentMethod ? ` | ${item.paymentMethod}` : ' | Cash');
-                feed.innerHTML += `<div class="tx-card">
-                    <div class="tx-left">
-                        <div class="tx-title">${item.details}</div>
-                        <div class="tx-sub"><span>${item.date}</span><span class="tx-badge">${item.category || (item.isSale ? 'Sale' : 'Expense')} ${meth}</span></div>
-                    </div>
-                    <div class="tx-right">
-                        <div class="tx-amount ${item.isSale ? 'positive' : 'negative'}">${item.isSale ? '+' : '-'} Rs ${item.displayAmount.toLocaleString()}</div>
-                        <div class="tx-actions">
-                            <button class="btn-icon" onclick="openEditModal('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Edit</button>
-                            <button class="btn-icon" style="color:var(--red);" onclick="deleteEntry('${item.id}', '${item.isSale ? 'Sale' : 'Expense'}')">Del</button>
-                        </div>
-                    </div>
-                </div>`;
-            });
         }
 
         // ==========================================
-        // FEATURE: DAILY REPORT & DRAWER
+        // 5. SHIFT END CALCULATOR
         // ==========================================
-        function generateDailyReport() {
-            const targetDate = document.getElementById('dailyReportDate').value;
-            const dSales = sales.filter(s => s.date === targetDate);
-            const dExps = expenses.filter(e => e.date === targetDate);
+        function calcDenom() {
+            let t = 0;
+            t += (parseInt(document.getElementById('n5000').value)||0)*5000; t += (parseInt(document.getElementById('n1000').value)||0)*1000;
+            t += (parseInt(document.getElementById('n500').value)||0)*500; t += (parseInt(document.getElementById('n100').value)||0)*100;
+            t += (parseInt(document.getElementById('n50').value)||0)*50; t += (parseInt(document.getElementById('n20').value)||0)*20;
+            t += (parseInt(document.getElementById('n10').value)||0)*10;
+            document.getElementById('denomTotal').textContent = `Rs ${t.toLocaleString()}`;
+            const taken = parseFloat(document.getElementById('denomTaken').value)||0;
+            document.getElementById('denomLeft').textContent = `Rs ${(t - taken).toLocaleString()}`;
+        }
 
-            const ts = dSales.reduce((a, b) => a + b.total, 0);
-            const te = dExps.reduce((a, b) => a + b.amount, 0);
+        function processShiftEnd() {
+            const taken = parseFloat(document.getElementById('denomTaken').value)||0;
+            if(taken > 0) {
+                const dest = document.getElementById('denomDest').value;
+                const t = { id: generateID(), date: getBusinessDate(), direction: dest === 'Bank' ? 'TillToBank' : 'TillToHand', amount: taken };
+                transfers.push(t);
+            }
+            const bankConf = document.getElementById('shiftBankConfirm').value;
+            if(bankConf) {
+                const bVal = parseFloat(bankConf);
+                const currentBank = getBalances().bank;
+                const diff = bVal - currentBank;
+                if(diff !== 0) transfers.push({ id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: 'Bank', amount: diff });
+            }
+            syncToCloud();
             
-            let todayCashIn = 0;
-            dSales.forEach(s => {
-                const cMatch = s.details.match(/Cash:\s*(\d+(\.\d+)?)/);
-                todayCashIn += cMatch ? parseFloat(cMatch[1]) : (s.details==="Imported Data"? s.total : 0);
-            });
-            
-            let todayCashOut = 0;
-            dExps.forEach(e => {
-                if(e.paymentMethod !== 'Bank' && e.paymentMethod !== 'Online' && e.paymentMethod !== 'Card') {
-                    todayCashOut += e.amount;
-                }
-            });
-
-            const drawerBalance = todayCashIn - todayCashOut;
-
-            document.getElementById('drSales').textContent = `Rs ${ts.toLocaleString()}`;
-            document.getElementById('drExpenses').textContent = `Rs ${te.toLocaleString()}`;
-            const drCash = document.getElementById('drCashDrawer');
-            drCash.textContent = `Rs ${drawerBalance.toLocaleString()}`;
-            drCash.style.color = drawerBalance >= 0 ? "var(--green)" : "var(--red)";
-
-            const list = document.getElementById('drFeedList');
-            list.innerHTML = '';
-            let combined = [...dSales.map(s => ({ ...s, d: s.total, is: true })), ...dExps.map(e => ({ ...e, d: e.amount, is: false }))];
-            if(combined.length === 0) list.innerHTML = `<p style="text-align:center; color:var(--text-muted);">No logs for this date.</p>`;
-            
-            combined.forEach(item => {
-                list.innerHTML += `<div class="tx-card" style="padding:10px;">
-                    <div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-badge" style="width:fit-content">${item.category || (item.is ? 'Sale':'Exp')}</div></div>
-                    <div class="tx-right"><div class="tx-amount ${item.is ? 'positive' : 'negative'}">${item.is ? '+' : '-'} Rs ${item.d.toLocaleString()}</div></div>
-                </div>`;
-            });
+            showToast("Shift Closed! Downloading Backup...");
+            document.querySelectorAll('.denom-row input').forEach(i => i.value=''); document.getElementById('denomTaken').value=''; document.getElementById('shiftBankConfirm').value=''; document.getElementById('shiftCardConfirm').value=''; calcDenom();
+            document.getElementById('exportRange').value = 'all'; generateReport('csv');
         }
 
         // ==========================================
-        // FEATURE: SALARY VAULT
+        // 6. SALARY VAULT & TRANSFERS
         // ==========================================
         function renderSalaryVault() {
-            const reserves = expenses.filter(e => e.category === 'Salaries & Wages').reduce((a, b) => a + b.amount, 0);
-            const payouts = salaryPayouts.reduce((a, b) => a + b.amount, 0);
-            
-            const balance = reserves - payouts;
-            document.getElementById('vaultBalance').textContent = `Rs ${balance.toLocaleString()}`;
+            const vaultBal = getBalances().vault;
+            document.getElementById('vaultBalance').textContent = `Rs ${vaultBal.toLocaleString()}`;
 
-            const feed = document.getElementById('vaultFeed');
-            feed.innerHTML = '';
+            const empUI = document.getElementById('employeeProgressBars');
+            empUI.innerHTML = `<h3 style="color:var(--yellow); margin-bottom:15px;">Vault Progress vs 85k Salary Goal</h3>`;
+            const overallPct = Math.min((vaultBal / TOTAL_SALARY_GOAL) * 100, 100);
+            empUI.innerHTML += `<div class="progress-wrapper"><div class="progress-header"><span>Overall Salary Pool</span><span>Rs ${vaultBal.toLocaleString()} / 85k</span></div><div class="progress-bar-bg" style="height:16px;"><div class="progress-fill ${overallPct===100?'full':''}" style="width: ${overallPct}%;"></div></div></div><hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">`;
             
-            let combined = [
-                ...expenses.filter(e => e.category === 'Salaries & Wages').map(e => ({...e, type: 'IN'})),
-                ...salaryPayouts.map(p => ({...p, type: 'OUT'}))
-            ];
-            combined.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const currentMonth = getBusinessDate().substring(0, 7); const monthPayouts = salaryPayouts.filter(p => p.date.startsWith(currentMonth));
+            for(const [emp, target] of Object.entries(salaryTargets)) {
+                const paid = monthPayouts.filter(p => p.employee === emp).reduce((a,b) => a+b.amount, 0); const pct = Math.min((paid / target) * 100, 100);
+                empUI.innerHTML += `<div class="progress-wrapper"><div class="progress-header"><span>${emp} Paid</span><span>Rs ${paid.toLocaleString()} / ${target.toLocaleString()}</span></div><div class="progress-bar-bg"><div class="progress-fill ${pct===100?'full':''}" style="width: ${pct}%;"></div></div></div>`;
+            }
 
+            const feed = document.getElementById('vaultFeed'); feed.innerHTML = '';
+            let combined = [...expenses.filter(e => e.category === 'Salaries & Wages').map(e => ({...e, type: 'IN'})), ...salaryPayouts.map(p => ({...p, type: 'OUT'}))];
+            combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             combined.forEach(item => {
-                const isOut = item.type === 'OUT';
-                feed.innerHTML += `<div class="tx-card">
-                    <div class="tx-left">
-                        <div class="tx-title">${item.details}</div>
-                        <div class="tx-sub"><span>${item.date}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${isOut ? 'Payout' : 'Added to Reserve'}</span></div>
-                    </div>
-                    <div class="tx-right">
-                        <div class="tx-amount ${isOut ? 'negative' : 'positive'}">${isOut ? '-' : '+'} Rs ${item.amount.toLocaleString()}</div>
-                        ${isOut ? `<button class="btn-icon" style="color:var(--red); margin-top:5px;" onclick="deletePayout('${item.id}')">Del</button>` : ''}
-                    </div>
-                </div>`;
+                const isOut = item.type === 'OUT'; const sub = isOut ? `Paid to: ${item.employee} (${item.paymentMethod})` : `Added from ${item.paymentMethod || 'Till'}`;
+                feed.innerHTML += `<div class="tx-card"><div class="tx-left"><div class="tx-title">${item.details}</div><div class="tx-sub"><span>${item.date}</span><span class="tx-badge" style="color:${isOut ? 'var(--red)':'var(--green)'}">${sub}</span></div></div><div class="tx-right"><div class="tx-amount ${isOut ? 'negative' : 'positive'}">${isOut ? '-' : '+'} Rs ${item.amount.toLocaleString()}</div>${isOut ? `<button class="btn-icon" style="color:var(--red); margin-top:5px;" onclick="deletePayout('${item.id}')">Del</button>` : ''}</div></div>`;
             });
+        }
+
+        function handleFundVault(e) {
+            e.preventDefault();
+            const exp = { id: generateID(), date: getBusinessDate(), type: 'Expense', category: 'Salaries & Wages', paymentMethod: document.getElementById('vaultFundSource').value, details: 'Manual Vault Funding', amount: parseFloat(document.getElementById('vaultFundAmt').value) };
+            expenses.push(exp); syncToCloud(); e.target.reset(); showToast("Vault Funded!");
         }
 
         function handlePayoutSubmit(e) {
             e.preventDefault();
-            const p = { id: generateID(), date: document.getElementById('payoutDate').value, details: document.getElementById('payoutDesc').value, amount: parseFloat(document.getElementById('payoutAmount').value) };
-            dbPayouts.child(p.id).set(p);
-            e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate();
-            showToast("Payout Logged!");
+            const p = { id: generateID(), date: document.getElementById('payoutDate').value, employee: document.getElementById('payoutEmployee').value, paymentMethod: document.getElementById('payoutMethod').value, details: `Vault Payout`, amount: parseFloat(document.getElementById('payoutAmount').value) };
+            salaryPayouts.push(p); syncToCloud(); e.target.reset(); document.getElementById('payoutDate').value = getBusinessDate(); showToast("Payout Processed!");
         }
 
-        function deletePayout(id) { if(confirm("Delete this salary payout?")) dbPayouts.child(id).remove(); }
-
-        // ==========================================
-        // FEATURE: TRANSFERS & BALANCES
-        // ==========================================
-        function handleTransfer(e) {
-            e.preventDefault();
-            const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) };
-            dbTransfers.child(t.id).set(t);
-            e.target.reset(); showToast("Transfer Saved!");
-        }
+        function handleTransfer(e) { e.preventDefault(); const t = { id: generateID(), date: getBusinessDate(), direction: document.getElementById('transferDir').value, amount: parseFloat(document.getElementById('transferAmt').value) }; transfers.push(t); syncToCloud(); e.target.reset(); showToast("Transfer Saved!"); }
 
         function adjustHolding(account) {
-            const input = document.getElementById(account === 'Cash' ? 'adjCashAmt' : 'adjBankAmt').value;
-            if(!input) return;
-            const target = parseFloat(input);
-            const current = getBalances()[account.toLowerCase()];
-            const diff = target - current;
-            
+            const input = document.getElementById(`adj${account}Amt`);
+            const target = parseFloat(input.value);
+            if(isNaN(target)) return;
+            const current = getBalances()[account.toLowerCase()]; const diff = target - current;
             if(diff === 0) return showToast("Already accurate!");
-            
             const adj = { id: generateID(), date: getBusinessDate(), direction: 'Adjustment', account: account, amount: diff };
-            dbTransfers.child(adj.id).set(adj);
-            document.getElementById(account === 'Cash' ? 'adjCashAmt' : 'adjBankAmt').value = '';
-            showToast(`${account} forcibly set to Rs ${target}`);
+            transfers.push(adj); syncToCloud();
+            if(input) input.value = ''; showToast(`${account} fixed to Rs ${target}`);
         }
 
         // ==========================================
-        // UI INTERACTIONS & FORMS
+        // 7. UI FORMS
         // ==========================================
         function switchTab(tabId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(`view-${tabId}`).classList.add('active');
-            
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active')); document.getElementById(`view-${tabId}`).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const btnMap = {'dashboard': 0, 'sales': 1, 'daily-report': 2, 'activity': 3};
+            const btnMap = {'dashboard': 0, 'sales': 1, 'add': 2, 'daily-report': 3, 'activity': 4}; // mapped directly to layout
             if(btnMap[tabId] !== undefined) document.querySelectorAll('.bottom-nav .nav-item')[btnMap[tabId]].classList.add('active');
             window.scrollTo(0,0);
         }
 
         function switchAddType(type) {
-            const isSale = type === 'Sale';
-            document.getElementById('btnTypeSale').classList.toggle('active', isSale);
-            document.getElementById('btnTypeExpense').classList.toggle('active', !isSale);
-            document.getElementById('saleForm').style.display = isSale ? 'block' : 'none';
-            document.getElementById('expenseForm').style.display = isSale ? 'none' : 'block';
+            const isSale = type === 'Sale'; document.getElementById('btnTypeSale').classList.toggle('active', isSale); document.getElementById('btnTypeExpense').classList.toggle('active', !isSale);
+            document.getElementById('saleForm').style.display = isSale ? 'block' : 'none'; document.getElementById('expenseForm').style.display = isSale ? 'none' : 'block';
         }
 
-        function setFilter(cat, chip) {
-            currentFilter = cat;
-            document.querySelectorAll('#filterPills .chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active'); renderFeed();
-        }
+        function setFilter(cat, chip) { currentFilter = cat; document.querySelectorAll('#filterPills .chip').forEach(c => c.classList.remove('active')); chip.classList.add('active'); renderGroupedFeed(); }
 
         function handleSaleSubmit(e) {
-            e.preventDefault();
-            const cash = parseFloat(document.getElementById('addSaleCash').value) || 0;
-            const card = parseFloat(document.getElementById('addSaleCard').value) || 0;
-            const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
-            if (cash + card + online === 0) return alert('Enter at least one sale amount');
-            
-            const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Cash: ${cash} | Card: ${card} | Online: ${online}`, total: cash + card + online };
-            dbSales.child(sale.id).set(sale);
-            e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); 
-            showToast("Sale Logged!"); switchTab('dashboard');
+            e.preventDefault(); const till = parseFloat(document.getElementById('addSaleTill').value) || 0; const hand = parseFloat(document.getElementById('addSaleHand').value) || 0; const online = parseFloat(document.getElementById('addSaleOnline').value) || 0;
+            if (till + hand + online === 0) return alert('Enter an amount');
+            const sale = { id: generateID(), date: document.getElementById('addSaleDate').value, type: 'Sale', category: 'Revenue', details: `Till: ${till} | Hand: ${hand} | Online: ${online}`, total: till + hand + online };
+            sales.push(sale); syncToCloud(); e.target.reset(); document.getElementById('addSaleDate').value = getBusinessDate(); showToast("Sale Logged!"); switchTab('dashboard');
         }
 
         function handleExpenseSubmit(e) {
-            e.preventDefault();
-            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
-            dbExpenses.child(exp.id).set(exp);
-            e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); 
-            showToast("Expense Logged!"); switchTab('dashboard');
+            e.preventDefault(); const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: document.getElementById('addExpCat').value, paymentMethod: document.getElementById('addExpMethod').value, details: document.getElementById('addExpItem').value, amount: parseFloat(document.getElementById('addExpAmount').value) };
+            expenses.push(exp); syncToCloud(); e.target.reset(); document.getElementById('addExpDate').value = getBusinessDate(); showToast("Expense Logged!"); switchTab('dashboard');
         }
 
         function quickAddSalary() {
-            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Cash', details: 'Daily Salary Reserve', amount: 4000 };
-            dbExpenses.child(exp.id).set(exp); showToast("Vault Funded!"); switchTab('salary-vault');
+            const exp = { id: generateID(), date: document.getElementById('addExpDate').value, type: 'Expense', category: 'Salaries & Wages', paymentMethod: 'Bank', details: 'Daily Salary Reserve', amount: 4000 };
+            expenses.push(exp); syncToCloud(); showToast("Vault Funded from Bank!"); switchTab('salary-vault');
         }
 
-        function deleteEntry(id, type) {
-            if (!confirm('Delete this entry permanently?')) return;
-            if (type === 'Sale') dbSales.child(id).remove(); else dbExpenses.child(id).remove();
+        function deleteEntry(id, type) { 
+            if (!confirm('Delete permanently?')) return; 
+            if (type === 'Sale') sales = sales.filter(s => s.id !== id); else expenses = expenses.filter(e => e.id !== id); 
+            syncToCloud(); 
+        }
+        function deletePayout(id) { 
+            if(confirm("Delete this payout?")) { salaryPayouts = salaryPayouts.filter(p => p.id !== id); syncToCloud(); } 
         }
 
         function openEditModal(id, type) {
-            const isSale = type === 'Sale';
-            const item = isSale ? sales.find(s => s.id === id) : expenses.find(e => e.id === id);
-            if (!item) return;
-            document.getElementById('editId').value = item.id;
-            document.getElementById('editType').value = type;
-            document.getElementById('editDate').value = item.date;
-            document.getElementById('editDetails').value = item.details;
-            document.getElementById('editAmount').value = isSale ? item.total : item.amount;
-            document.getElementById('editCategoryGroup').style.display = isSale ? 'none' : 'block';
-            document.getElementById('editMethodGroup').style.display = isSale ? 'none' : 'block';
-            if(!isSale) { document.getElementById('editCategory').value = item.category; document.getElementById('editExpMethod').value = item.paymentMethod || 'Cash'; }
+            const isSale = type === 'Sale'; const item = isSale ? sales.find(s => s.id === id) : expenses.find(e => e.id === id); if (!item) return;
+            document.getElementById('editId').value = item.id; document.getElementById('editType').value = type; document.getElementById('editDate').value = item.date; document.getElementById('editDetails').value = item.details; document.getElementById('editAmount').value = isSale ? item.total : item.amount;
+            document.getElementById('editCategoryGroup').style.display = isSale ? 'none' : 'block'; document.getElementById('editMethodGroup').style.display = isSale ? 'none' : 'block';
+            if(!isSale) { document.getElementById('editCategory').value = item.category; document.getElementById('editExpMethod').value = item.paymentMethod || 'Till'; }
             document.getElementById('editModal').classList.add('open');
         }
 
         function closeModal(modalId) { document.getElementById(modalId).classList.remove('open'); }
 
         function saveEdit() {
-            const id = document.getElementById('editId').value;
-            const type = document.getElementById('editType').value;
-            if (type === 'Sale') {
-                const item = sales.find(s => s.id === id);
-                if(item) { item.date = document.getElementById('editDate').value; item.details = document.getElementById('editDetails').value; item.total = parseFloat(document.getElementById('editAmount').value); dbSales.child(id).set(item); }
-            } else {
-                const item = expenses.find(e => e.id === id);
-                if(item) { item.date = document.getElementById('editDate').value; item.category = document.getElementById('editCategory').value; item.paymentMethod = document.getElementById('editExpMethod').value; item.details = document.getElementById('editDetails').value; item.amount = parseFloat(document.getElementById('editAmount').value); dbExpenses.child(id).set(item); }
-            }
-            showToast("Saved!"); closeModal('editModal');
+            const id = document.getElementById('editId').value; const type = document.getElementById('editType').value;
+            if (type === 'Sale') { const idx = sales.findIndex(s => s.id === id); if(idx !== -1) { sales[idx].date = document.getElementById('editDate').value; sales[idx].details = document.getElementById('editDetails').value; sales[idx].total = parseFloat(document.getElementById('editAmount').value); } } 
+            else { const idx = expenses.findIndex(e => e.id === id); if(idx !== -1) { expenses[idx].date = document.getElementById('editDate').value; expenses[idx].category = document.getElementById('editCategory').value; expenses[idx].paymentMethod = document.getElementById('editExpMethod').value; expenses[idx].details = document.getElementById('editDetails').value; expenses[idx].amount = parseFloat(document.getElementById('editAmount').value); } }
+            syncToCloud(); showToast("Saved!"); closeModal('editModal');
         }
 
         // ==========================================
-        // 6. EXPORT SYSTEM (PDF & CSV)
+        // 8. EXPORT SYSTEM
         // ==========================================
         function toggleExportDates() { document.getElementById('exportCustomFields').style.display = document.getElementById('exportRange').value === 'custom' ? 'block' : 'none'; }
-
         function generateReport(format) {
-            const range = document.getElementById('exportRange').value;
-            let fSales = sales; let fExp = expenses; let dateText = "Lifetime Data";
-
-            if(range === 'month') {
-                const now = new Date(); const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-                fSales = sales.filter(s => s.date.startsWith(currentMonth)); fExp = expenses.filter(e => e.date.startsWith(currentMonth)); dateText = `Month: ${currentMonth}`;
-            } else if (range === 'custom') {
-                const start = document.getElementById('exportStart').value; const end = document.getElementById('exportEnd').value;
-                if(!start || !end) return alert("Please select start and end dates.");
-                fSales = sales.filter(s => s.date >= start && s.date <= end); fExp = expenses.filter(e => e.date >= start && e.date <= end); dateText = `From ${start} to ${end}`;
-            }
-
-            const tSales = fSales.reduce((sum, s) => sum + s.total, 0); const tExp = fExp.reduce((sum, e) => sum + e.amount, 0);
-            let combined = [...fSales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...fExp.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))];
-            combined.sort((a, b) => new Date(a.date) - new Date(b.date));
-
+            const range = document.getElementById('exportRange').value; let fSales = sales; let fExp = expenses; let dateText = "Lifetime Data";
+            if(range === 'month') { const currentMonth = getBusinessDate().substring(0, 7); fSales = sales.filter(s => s.date.startsWith(currentMonth)); fExp = expenses.filter(e => e.date.startsWith(currentMonth)); dateText = `Month: ${currentMonth}`; } 
+            else if (range === 'custom') { const start = document.getElementById('exportStart').value; const end = document.getElementById('exportEnd').value; if(!start || !end) return alert("Select dates."); fSales = sales.filter(s => s.date >= start && s.date <= end); fExp = expenses.filter(e => e.date >= start && e.date <= end); dateText = `From ${start} to ${end}`; }
+            const tSales = fSales.reduce((a, b) => a + b.total, 0); const tExp = fExp.reduce((a, b) => a + b.amount, 0);
+            let combined = [...fSales.map(s => ({ ...s, displayAmount: s.total, isSale: true })), ...fExp.map(e => ({ ...e, displayAmount: e.amount, isSale: false }))]; combined.sort((a, b) => { if (a.date !== b.date) return new Date(b.date) - new Date(a.date); return b.id.localeCompare(a.id); });
             if(format === 'csv') exportToCSV(combined, tSales, tExp, dateText); else exportToPDF(combined, tSales, tExp, dateText);
         }
-
         function exportToCSV(data, tSales, tExp, dateText) {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += `DAILY SUMMARY REPORT,${dateText}\nTotal Sales (Rs),Total Expenses (Rs),Net Profit / Savings (Rs)\n${tSales},${tExp},${tSales - tExp}\n\n`;
-            csvContent += "DETAILED TRANSACTIONS\nDate,Type,Category,Payment Method,Description,Amount (Rs)\n";
-            data.forEach(item => {
-                const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod || "Cash");
-                csvContent += `"${item.date}","${type}","${cat}","${pm}","${item.details.replace(/"/g, '""')}","${item.displayAmount}"\n`;
-            });
+            let csvContent = "data:text/csv;charset=utf-8,DAILY SUMMARY REPORT," + dateText + "\nTotal Sales (Rs),Total Expenses (Rs),Net Profit (Rs)\n" + tSales + "," + tExp + "," + (tSales - tExp) + "\n\nDETAILED TRANSACTIONS\nDate,Type,Category,Payment Method,Description,Amount (Rs)\n";
+            data.forEach(item => { const type = item.isSale ? "Sale" : "Expense"; const cat = item.category || "N/A"; const pm = item.isSale ? "-" : (item.paymentMethod || "Till"); csvContent += `"${item.date}","${type}","${cat}","${pm}","${item.details.replace(/"/g, '""')}","${item.displayAmount}"\n`; });
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Stackd_${dateText.replace(/ /g, "_")}.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); showToast("Excel Downloaded!");
         }
-
         function exportToPDF(data, tSales, tExp, dateText) {
             document.getElementById('pdfDateRangeText').textContent = dateText; document.getElementById('pdfTotalSales').textContent = `Rs ${tSales.toLocaleString()}`; document.getElementById('pdfTotalExp').textContent = `Rs ${tExp.toLocaleString()}`; document.getElementById('pdfNetProfit').textContent = `Rs ${(tSales - tExp).toLocaleString()}`;
             const tbody = document.getElementById('pdfTableBody'); tbody.innerHTML = '';
